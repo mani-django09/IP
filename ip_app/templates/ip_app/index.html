@@ -1,0 +1,349 @@
+{% extends 'ip_app/base.html' %}
+{% load static %}
+
+{% block title %}What Is My IP Address - IP Address Lookup{% endblock %}
+
+{% block content %}
+    <!-- Search Section -->
+    <section class="search-section py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="input-group">
+                        <input type="text" 
+                               id="ip-search" 
+                               class="form-control form-control-lg border-0 shadow-none"
+                               placeholder="Enter IP address to lookup..."
+                               onkeypress="handleSearchKeyPress(event)">
+                        <button onclick="searchIP()" 
+                                class="btn btn-primary btn-lg px-4">
+                            Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IP Info Section -->
+    <section id="my-ip" class="ip-info-section">
+        <div class="container">
+            <div class="row">
+                <!-- IP Info -->
+                <div class="col">
+                    <div class="ip-info-box">
+                        <div class="ip-info-content">
+                            <div class="ip-info-header">My IP Information:</div>
+                            <div class="ip-info-row">
+                                <div class="info-label">IPv4:</div>
+                                <div class="info-value" id="ip-address">Loading...</div>
+                            </div>
+                            <div class="ip-info-row">
+                                <div class="info-label">IPv6:</div>
+                                <div class="info-value">Not detected</div>
+                            </div>
+                            <div class="ip-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">ISP:</span>
+                                    <span class="detail-value" id="isp">Loading...</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">City:</span>
+                                    <span class="detail-value" id="city">Loading...</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Region:</span>
+                                    <span class="detail-value" id="region">Loading...</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Country:</span>
+                                    <span class="detail-value" id="country">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map -->
+                <div class="col">
+                    <div class="map-container">
+                        <div id="map"></div>
+                        <div class="map-footer">
+                            <p class="location-text" id="location"></p>
+                            <div class="location-accuracy">
+                                Location not accurate?
+                                <a href="#" class="update-location">Update My IP Location</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Details Section -->
+    <section id="details" class="details-section">
+        <div class="container">
+            <div class="row">
+                <!-- Location Information -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h3>Location Information</h3>
+                        <div class="info-row">
+                            <label>Country:</label>
+                            <span id="location-country">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Region:</label>
+                            <span id="location-region">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>City:</label>
+                            <span id="location-city">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Postal:</label>
+                            <span id="location-postal">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Coordinates:</label>
+                            <span id="location-coordinates">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Network Information -->
+                <div class="col-md-6">
+                    <div class="info-card">
+                        <h3>Network Information</h3>
+                        <div class="info-row">
+                            <label>Organization:</label>
+                            <span id="org">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>AS Number:</label>
+                            <span id="as">Loading...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Timezone:</label>
+                            <span id="timezone">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dynamic Cards Section -->
+    <section class="cards-section py-5 bg-light" id="tools">
+        <div class="container">
+            <h2 class="text-center mb-4">IP Tools & Features</h2>
+            <div class="row g-4">
+                <!-- Proxy Detection Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="proxy">
+                        <div class="card-icon">🔐</div>
+                        <h3>Proxy Detection</h3>
+                        <p>Identify proxy servers and VPN connections with advanced detection system.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">100%</span>
+                                <span class="stat-label">Detection</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">Live</span>
+                                <span class="stat-label">Monitoring</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speed Test Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="speed">
+                        <div class="card-icon">⚡</div>
+                        <h3>Speed Test</h3>
+                        <p>Check your connection speed and latency with our global server network.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">1Gbps</span>
+                                <span class="stat-label">Max Speed</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">50+</span>
+                                <span class="stat-label">Locations</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Threat Analysis Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="threat">
+                        <div class="card-icon">🛡️</div>
+                        <h3>Threat Analysis</h3>
+                        <p>Check if an IP is associated with malicious activities or blacklists.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">200+</span>
+                                <span class="stat-label">Sources</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">Real-time</span>
+                                <span class="stat-label">Updates</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Domain Analysis Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="domain">
+                        <div class="card-icon">🌐</div>
+                        <h3>Domain Analysis</h3>
+                        <p>Reverse DNS lookup and detailed domain information analysis.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">DNS</span>
+                                <span class="stat-label">Lookup</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">Whois</span>
+                                <span class="stat-label">Data</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Tools Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="ping">
+                        <div class="card-icon">📡</div>
+                        <h3>Network Tools</h3>
+                        <p>Comprehensive suite of network diagnostic tools including ping and traceroute.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">10+</span>
+                                <span class="stat-label">Tools</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">Pro</span>
+                                <span class="stat-label">Analysis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- API Access Card -->
+                <div class="col-md-4">
+                    <div class="feature-card" data-action="api">
+                        <div class="card-icon">⚙️</div>
+                        <h3>API Access</h3>
+                        <p>Full API access for integrating IP lookup capabilities into your applications.</p>
+                        <div class="card-stats">
+                            <div class="stat">
+                                <span class="stat-value">REST</span>
+                                <span class="stat-label">API</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">1000</span>
+                                <span class="stat-label">Req/Day</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section py-5" id="faq">
+        <div class="container">
+            <h2 class="text-center mb-4">Frequently Asked Questions</h2>
+            <div class="accordion" id="faqAccordion">
+                <!-- IP Geolocation Accuracy FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            How accurate is IP geolocation?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            IP geolocation accuracy varies by region and data source. Our system typically provides city-level accuracy with 90-99% reliability in most regions. For maximum accuracy, we combine multiple data sources and update our database in real-time.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Information FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            What information can you get from an IP address?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            An IP address can reveal approximate location, ISP details, connection type (residential/commercial), proxy/VPN usage, timezone, and potential security risks. However, it cannot provide personal information like name, address, or browsing history.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Purpose FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Why do I need to know my IP address?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Knowing your IP address is useful for network troubleshooting, setting up remote access, configuring security systems, optimizing online gaming connections, and verifying VPN functionality. It's also important for diagnosing network issues with your ISP.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Change FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            How often does my IP address change?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            IP address change frequency depends on your ISP and connection type. Dynamic IPs may change daily or when you restart your router, while static IPs remain constant. Mobile devices may change IPs frequently as you move between networks.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DNS Lookup FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            What is a reverse DNS lookup?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Reverse DNS lookup is the process of determining the domain name associated with an IP address. This can help identify the organization or service provider that owns the IP address and is useful for network troubleshooting and security analysis.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Privacy FAQ -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                            Is my IP address personal information?
+                        </button>
+                    </h2>
+                    <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            While an IP address is unique to your internet connection, it's not considered sensitive personal information. However, it's still good practice to protect it using VPNs or proxies when privacy is a concern, especially on public networks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

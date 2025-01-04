@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>{% block title %}What Is My IP Address - IP Lookup Tool{% endblock %}</title>
+    <meta name="description" content="Free IP address lookup tool. Find your IPv4, IPv6, location, ISP details, and more. Accurate geolocation data and network information.">
+    <meta name="keywords" content="ip address, what is my ip, ip lookup, ip checker, ip location, ip geolocation, ip address lookup">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="What Is My IP Address - IP Lookup Tool">
+    <meta property="og:description" content="Free IP address lookup tool. Get your IP location, ISP details, and network information instantly.">
+    <meta property="og:image" content="{% static 'ip_app/img/og-image.png' %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="What Is My IP Address - IP Lookup Tool">
+    <meta property="twitter:description" content="Free IP address lookup tool. Get your IP location, ISP details, and network information instantly.">
+    <meta property="twitter:image" content="{% static 'ip_app/img/og-image.png' %}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'ip_app/site.webmanifest' %}">
+
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{% static 'ip_app/css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "What Is My IP Address",
+        "description": "Free IP address lookup tool providing detailed information about your IP address including location, ISP, and network details.",
+        "applicationCategory": "Utility",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'YOUR-GA-ID');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+<!-- Navigation -->
+<nav class="navbar bg-white">
+    <div class="container">
+        <a href="/" class="logo-link" title="What Is My IP Address - Home">
+            <div class="logo-container">
+                <span class="logo-text">
+                    <span class="logo-what">What</span>
+                    <span class="logo-is">Is</span>
+                    <span class="logo-my">My</span>
+                    <span class="logo-ip">IP</span>
+                    <span class="logo-address">Address</span>
+                </span>
+            </div>
+        </a>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h4>About</h4>
+                    <p>Get detailed information about IP addresses, including location, ISP, and network details.</p>
+                </div>
+                <div class="col-md-3">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#my-ip">My IP</a></li>
+                        <li><a href="#lookup">IP Lookup</a></li>
+                        <li><a href="#tools">Tools</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h4>Contact</h4>
+                    <p>For support: support@ipchecker.com</p>
+                    <p><a href="/contact">Contact Us</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{% static 'ip_app/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
