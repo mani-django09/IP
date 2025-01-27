@@ -1,64 +1,90 @@
-{% extends 'ip_app/base.html' %}
 {% load static %}
 
-{% block title %}Contact Us - What Is My IP Address{% endblock %}
-
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact- What Is My IP Address</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'ip_app/css/style.css' %}">
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg bg-white">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <span class="text-primary fw-bold">What Is My</span>
+            <span class="text-secondary">IP Address</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
 <!-- Contact Form Section -->
-<section class="contact-section py-5">
+<section class="contact-section">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <h1 class="text-center mb-5">Contact Us</h1>
-                <div class="row">
+                <h1 class="text-center page-title">Contact WhatIsMyIPAddress.World</h1>
+                <p class="text-center subtitle mb-5">Get in touch with us for any questions about IP lookup, location services, or support</p>
+                
+                <div class="row g-4">
                     <div class="col-md-6">
-                        <div class="contact-form-wrapper bg-white p-4 rounded-3 shadow-sm">
+                        <div class="contact-form-wrapper">
                             <div id="form-messages"></div>
                             <form id="contact-form" method="POST">
                                 {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                                <div class="mb-4">
+                                    <label for="name" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control custom-input" id="name" name="name" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="mb-4">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control custom-input" id="email" name="email" required>
                                 </div>
-                                <div class="mb-3">
+                                <div class="mb-4">
                                     <label for="subject" class="form-label">Subject</label>
-                                    <input type="text" class="form-control" id="subject" name="subject" required>
+                                    <input type="text" class="form-control custom-input" id="subject" name="subject" required>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="message" class="form-label">Message</label>
-                                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                                <div class="mb-4">
+                                    <label for="message" class="form-label">Your Message</label>
+                                    <textarea class="form-control custom-input" id="message" name="message" rows="5" required></textarea>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100" id="submit-btn">
+                                <button type="submit" class="btn btn-primary w-100 submit-btn" id="submit-btn">
                                     <span class="button-text">Send Message</span>
                                     <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                                 </button>
                             </form>
                         </div>
                     </div>
+                    
                     <div class="col-md-6">
-                        <div class="contact-info-wrapper bg-white p-4 rounded-3 shadow-sm h-100">
-                            <h3 class="mb-4">Get in Touch</h3>
-                            <p class="text-muted">We'd love to hear from you. Whether you have a question about our services, need help with our IP lookup tool, or just want to say hello, don't hesitate to reach out.</p>
-                            
-                            <div class="mt-4">
-                                <h4 class="h5">Our Office</h4>
-                                <p class="text-muted">
-                                    123 IP Street<br>
-                                    Techville, TX 12345<br>
-                                    United States
-                                </p>
+                        <div class="contact-info-wrapper">
+                            <div class="info-header">
+                                <i class="fas fa-envelope-open-text icon-primary"></i>
+                                <h3>Get in Touch</h3>
                             </div>
-
-                            <div class="mt-4">
-                                <h4 class="h5">Contact Information</h4>
-                                <p class="text-muted">
-                                    Email: support@ipchecker.com<br>
-                                    Phone: (123) 456-7890
-                                </p>
+                            <p class="info-text">Have questions about our IP lookup services? Need technical support? We're here to help! Our team at WhatIsMyIPAddress.World is dedicated to providing you with accurate IP information and excellent support.</p>
+                            
+                            <div class="contact-details">
+                                <div class="detail-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <h4>Email Us</h4>
+                                        <p>manikant007y@gmail.com</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="detail-item">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <h4>Response Time</h4>
+                                        <p>We typically respond within 24 hours</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -67,6 +93,192 @@
         </div>
     </div>
 </section>
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h4>About</h4>
+                <p>Get detailed information about IP addresses, including location, ISP, and network details.</p>
+            </div>
+            <div class="col-md-4">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h4>Contact</h4>
+                <p>For support:support@ipchecker.com</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Add this section for background styling -->
+<div class="contact-bg-pattern"></div>
+
+<style>
+/* Navbar Styles */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 0;
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.navbar-brand .text-primary {
+    color: #2A9FD6 !important;
+}
+
+.navbar-brand .text-secondary {
+    color: #1B4A6B !important;
+}
+
+/* Contact Section Styles */
+.contact-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+    padding: 4rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.page-title {
+    color: #1B4A6B;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.contact-form-wrapper {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.contact-info-wrapper {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    height: 100%;
+}
+
+.custom-input {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #2A9FD6;
+    box-shadow: 0 0 0 3px rgba(42, 159, 214, 0.1);
+}
+
+.submit-btn {
+    background: #2A9FD6;
+    border: none;
+    padding: 1rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background: #1B4A6B;
+    transform: translateY(-2px);
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-header h3 {
+    color: #1B4A6B;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.icon-primary {
+    font-size: 2rem;
+    color: #2A9FD6;
+}
+
+.info-text {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.contact-details {
+    margin-top: 2rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(42, 159, 214, 0.05);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+    transform: translateX(5px);
+    background: rgba(42, 159, 214, 0.1);
+}
+
+.detail-item i {
+    color: #2A9FD6;
+    font-size: 1.2rem;
+    margin-top: 0.25rem;
+}
+
+.detail-item h4 {
+    color: #1B4A6B;
+    font-size: 1.1rem;
+    margin: 0 0 0.25rem 0;
+}
+
+.detail-item p {
+    color: #64748b;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .contact-section {
+        padding: 3rem 0;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .contact-form-wrapper,
+    .contact-info-wrapper {
+        padding: 1.5rem;
+    }
+}
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -79,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Show loading state
         submitBtn.disabled = true;
         buttonText.textContent = 'Sending...';
         spinner.classList.remove('d-none');
@@ -114,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } finally {
-            // Reset button state
             submitBtn.disabled = false;
             buttonText.textContent = 'Send Message';
             spinner.classList.add('d-none');

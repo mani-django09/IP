@@ -3,13 +3,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <!-- SEO Meta Tags -->
     <title>{% block title %}What Is My IP Address - IP Lookup Tool{% endblock %}</title>
     <meta name="description" content="Free IP address lookup tool. Find your IPv4, IPv6, location, ISP details, and more. Accurate geolocation data and network information.">
-    <meta name="keywords" content="ip address, what is my ip, ip lookup, ip checker, ip location, ip geolocation, ip address lookup">
-    
+    <meta name="keywords" content="what is my ip, my ip address, ip locator, whats my ip, ip address lookup, what is my ip address, ip finder, check ip">
+    <meta name="description" content="Find out 'What is my IP address?' with our free IP locator tool. Get your IP location, ISP details, and more. Check your IPv4, IPv6 address instantly with our what's my IP tool.">
+    <meta property="og:title" content="What Is My IP? - Free IP Address Lookup & Location Finder">
+    <meta property="og:description" content="Instantly check your IP address and location with our free IP lookup tool. Get detailed information about your IP address, location, and network.">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
@@ -27,15 +30,10 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'ip_app/site.webmanifest' %}">
-
     <!-- Stylesheets -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'ip_app/css/style.css' %}">
     {% block extra_css %}{% endblock %}
 
@@ -55,37 +53,27 @@
         }
     }
     </script>
-
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'YOUR-GA-ID');
-    </script>
 </head>
 <body>
     <!-- Navigation -->
-<!-- Navigation -->
-<nav class="navbar bg-white">
-    <div class="container">
-        <a href="/" class="logo-link" title="What Is My IP Address - Home">
-            <div class="logo-container">
-                <span class="logo-text">
-                    <span class="logo-what">What</span>
-                    <span class="logo-is">Is</span>
-                    <span class="logo-my">My</span>
-                    <span class="logo-ip">IP</span>
-                    <span class="logo-address">Address</span>
-                </span>
-            </div>
-        </a>
-    </div>
-</nav>
+    <nav class="navbar bg-white">
+        <div class="container">
+            <a href="/" class="logo-link" title="What Is My IP Address - Home">
+                <div class="logo-container">
+                    <span class="logo-text">
+                        <span class="logo-what">What</span>
+                        <span class="logo-is">Is</span>
+                        <span class="logo-my">My</span>
+                        <span class="logo-ip">IP</span>
+                        <span class="logo-address">Address</span>
+                    </span>
+                </div>
+            </a>
+        </div>
+    </nav>
 
     <!-- Main Content -->
-    <main>
+    <main class="main-wrapper">
         {% block content %}
         {% endblock %}
     </main>
@@ -93,12 +81,12 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <div class="col-md-3">
+            <div class="row gy-4">
+                <div class="col-12 col-md-3">
                     <h4>About</h4>
                     <p>Get detailed information about IP addresses, including location, ISP, and network details.</p>
                 </div>
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <h4>Quick Links</h4>
                     <ul>
                         <li><a href="#my-ip">My IP</a></li>
@@ -106,17 +94,18 @@
                         <li><a href="#tools">Tools</a></li>
                     </ul>
                 </div>
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <h4>Legal</h4>
                     <ul>
                         <li><a href="/privacy">Privacy Policy</a></li>
                         <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+
                     </ul>
                 </div>
-                <div class="col-md-3">
+                <div class="col-12 col-md-3">
                     <h4>Contact</h4>
-                    <p>For support: support@ipchecker.com</p>
-                    <p><a href="/contact">Contact Us</a></p>
+                    <p>For support: manikant007y@gmail.com</p>
                 </div>
             </div>
         </div>

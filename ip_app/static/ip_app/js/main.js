@@ -1,15 +1,20 @@
 let map = null;
+let mapMobile = null;
 let marker = null;
+let markerMobile = null;
 
 // Initialize map with coordinates
-function initMap(lat, lon) {
+function initMap(lat, lon, isMobile = false) {
+    const mapId = isMobile ? 'map-mobile' : 'map';
+    const currentMap = isMobile ? mapMobile : map;
+    
     // Remove existing map if it exists
-    if (map) {
-        map.remove();
+    if (currentMap) {
+        currentMap.remove();
     }
 
     // Create map instance
-    map = L.map('map', {
+    const newMap = L.map(mapId, {
         center: [lat, lon],
         zoom: 13,
         zoomControl: true
@@ -18,24 +23,23 @@ function initMap(lat, lon) {
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    }).addTo(newMap);
 
     // Add marker
-    marker = L.marker([lat, lon]).addTo(map);
+    const newMarker = L.marker([lat, lon]).addTo(newMap);
 
     // Force refresh
     setTimeout(() => {
-        map.invalidateSize(true);
+        newMap.invalidateSize(true);
     }, 100);
-}
 
-// Copy to clipboard functionality
-async function copyToClipboard(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showToast('IP copied to clipboard!', 'success');
-    } catch (err) {
-        showToast('Failed to copy', 'error');
+    // Update references
+    if (isMobile) {
+        mapMobile = newMap;
+        markerMobile = newMarker;
+    } else {
+        map = newMap;
+        marker = newMarker;
     }
 }
 
@@ -101,17 +105,11 @@ function handleSearchKeyPress(event) {
 // Update UI with data
 function updateUIWithData(data) {
     try {
-        // Update main IP info section
         document.querySelector('.ip-info-content').innerHTML = `
             <div class="ip-info-header">My IP Information:</div>
             <div class="ip-info-row">
                 <div class="info-label">IPv4:</div>
-                <div class="info-value" id="ip-display">
-                    ${data.query}
-                    <button onclick="copyToClipboard('${data.query}')" class="btn btn-primary btn-sm ms-2">
-                        Copy IP
-                    </button>
-                </div>
+                <div class="info-value" id="ip-display">${data.query}</div>
             </div>
             <div class="ip-info-row">
                 <div class="info-label">IPv6:</div>
@@ -134,8 +132,7 @@ function updateUIWithData(data) {
                     <span class="detail-label">Country:</span>
                     <span class="detail-value">${data.country || 'N/A'}</span>
                 </div>
-            </div>
-        `;
+            </div>`;
 
         // Update location information
         const locationFields = {
@@ -167,21 +164,28 @@ function updateUIWithData(data) {
             }
         });
 
-        // Update map and location text
+        // Update both desktop and mobile maps
         if (data.lat && data.lon) {
-            initMap(parseFloat(data.lat), parseFloat(data.lon));
+            initMap(parseFloat(data.lat), parseFloat(data.lon), false); // Desktop map
+            initMap(parseFloat(data.lat), parseFloat(data.lon), true);  // Mobile map
+            
+            // Update location text for both maps
+            const locationText = `${data.city}, ${data.regionName}, ${data.country}`;
             const locationElement = document.getElementById('location');
+            const locationMobileElement = document.getElementById('location-mobile');
+            
             if (locationElement) {
-                locationElement.textContent = `${data.city}, ${data.regionName}, ${data.country}`;
+                locationElement.textContent = locationText;
+            }
+            if (locationMobileElement) {
+                locationMobileElement.textContent = locationText;
             }
         }
-
     } catch (error) {
         console.error('Error updating UI:', error);
         showToast('Error updating information', 'error');
     }
 }
-
 // Fetch initial IP info
 async function fetchIPInfo() {
     try {
@@ -252,8 +256,9 @@ function handleCardLeave(event) {
 
 // Initialize all features on page load
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize map with default location (will be updated when IP data is loaded)
-    initMap(40.7128, -74.0060);
+    // Initialize both maps with default location
+    initMap(40.7128, -74.0060, false); // Desktop map
+    initMap(40.7128, -74.0060, true);  // Mobile map
     
     // Fetch IP information
     fetchIPInfo();
@@ -265,8 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
         card.addEventListener('mouseleave', handleCardLeave);
     });
 });
-
-
 
 // Handle logo click for smooth scrolling
 document.addEventListener('DOMContentLoaded', function() {
