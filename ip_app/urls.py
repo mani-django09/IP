@@ -10,5 +10,7 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('contact/', views.contact, name='contact'),
     path('api/contact/', views.contact_submit, name='contact_submit'),  # New contact API endpoint
+    path('ip-lookup/', views.ip_lookup, name='ip_lookup'),
+    path('ip-lookup/<str:ip_address>/', views.ip_lookup, name='ip_lookup_with_ip'),
 
 ]

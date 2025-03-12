@@ -143,3 +143,34 @@ def contact_submit(request):
         'status': 'error',
         'message': 'Invalid request method'
     }, status=400)
+
+# In your views.py or api.py
+def ip_info(request):
+    ip = request.GET.get('ip', None)
+    
+    if ip:
+        # Lookup provided IP address
+        ip_data = lookup_ip_address(ip)
+    else:
+        # Get visitor's IP address
+        ip_data = get_visitor_ip_info(request)
+    
+    return JsonResponse(ip_data)
+
+def lookup_ip_address(ip):
+    # Your code to lookup an IP address
+    # You might use an external API like ipinfo.io, ip-api.com, etc.
+    # Example with requests library:
+    try:
+        response = requests.get(f'http://ip-api.com/json/{ip}')
+        data = response.json()
+        return data
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+def ip_lookup(request, ip_address=None):
+    # If IP address is provided in URL, pass it to the template
+    context = {}
+    if ip_address:
+        context['ip_address'] = ip_address
+    
+    return render(request, 'ip_app/ip_lookup.html', context)
