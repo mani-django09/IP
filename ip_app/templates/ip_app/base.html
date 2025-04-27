@@ -3,31 +3,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-    <!-- SEO Meta Tags -->
-    <title>{% block title %}What Is My IP Address - Free IP Lookup Tool{% endblock %}</title>
-    <meta name="description" content="Free IP address lookup tool. Find your IPv4, IPv6, location, ISP details, and more. Accurate geolocation data and network information.">
-    <meta name="keywords" content="what is my ip, my ip, whats my ip, ip address lookup, what is my ip address, ip lookup, check ip, ip finder, ip locator">
+<!-- Favicon -->
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/favicon/apple-touch-icon.png' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon/favicon-32x32.png' %}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon/favicon-16x16.png' %}">
+<link rel="manifest" href="{% static 'ip_app/img/favicon/site.webmanifest' %}">
+
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+    
+    <!-- Primary Meta Tags -->
+    <title>{% block title %}What Is My IP Address | Check IP Address Location | IP Lookup Tool{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Find 'What is my IP address' instantly with our free IP lookup tool. Get your current IPv4, IPv6, precise location, ISP details, and more. Check your IP now!{% endblock %}">
+    <meta name="keywords" content="what is my ip, my ip, whats my ip, my ip address, ip address lookup, what is my ip address, ip lookup, check ip, ip finder, ip tracker, find my ip, ipv6 checker, geolocation">
+    
+    <!-- Mobile-specific meta -->
+    <meta name="theme-color" content="#1b4a6b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="WhatIsMyIPAddress.World">
     
     {% block extra_meta %}{% endblock %}
 
-    <!-- Stylesheets -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'ip_app/css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'ip_app/css/ip_lookup.css' %}">
+    <!-- Font Awesome - Load defer for performance -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></noscript>
     
+    <!-- Tailwind CSS - Preload for better performance -->
+    <link rel="stylesheet" href="{% static 'ip_app/css/styles.css' %}">
+    
+    <!-- Leaflet Map CSS - Load when needed -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></noscript>
+    
+    <!-- Google Fonts - Optimized loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
 
     {% block extra_css %}{% endblock %}
-
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/favicon/apple-touch-icon.png' %}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon/favicon-32x32.png' %}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon/favicon-16x16.png' %}">
-    <link rel="manifest" href="{% static 'ip_app/img/favicon/site.webmanifest' %}">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -43,119 +64,298 @@
         }
     }
     </script>
-
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6913093595582462"
-     crossorigin="anonymous"></script>
-
-     
 </head>
-<body>
-    <!-- Navigation -->
-    <nav class="navbar bg-white">
-        <div class="container">
-            <a href="/" class="logo-link" title="What Is My IP Address - Home">
-                <div class="logo-container">
-                    <span class="logo-text">
-                        <span class="logo-what">What</span>
-                        <span class="logo-is">Is</span>
-                        <span class="logo-my">My</span>
-                        <span class="logo-ip">IP</span>
-                        <span class="logo-address">Address</span>
-                    </span>
-                </div>
-            </a>
-            <div class="nav-links d-none d-md-flex">
-                <a href="/#my-ip" class="nav-link">My IP</a>
-                <a href="/#tools" class="nav-link">IP Tools</a>
-                <a href="/#faq" class="nav-link">FAQ</a>
-                <a href="/contact" class="nav-link">Contact</a>
-            </div>
-            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileMenu" aria-controls="mobileMenu" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
-    
-    <!-- Mobile Menu -->
-    <div class="collapse navbar-collapse d-md-none" id="mobileMenu">
-        <div class="container py-3">
-            <div class="d-flex flex-column">
-                <a href="/#my-ip" class="mobile-nav-link py-2">My IP</a>
-                <a href="/#tools" class="mobile-nav-link py-2">IP Tools</a>
-                <a href="/#faq" class="mobile-nav-link py-2">FAQ</a>
-                <a href="/blog" class="mobile-nav-link py-2">IP Blog</a>
-                <a href="/contact" class="mobile-nav-link py-2">Contact</a>
-            </div>
+<body class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
+    <!-- Loading Overlay - Enhanced Animation -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <div class="text-center px-4">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-4 border-b-4 border-secondary"></div>
+            <p class="mt-4 text-white text-base sm:text-lg">Loading IP information...</p>
         </div>
     </div>
 
+    <!-- Skip to Content Link for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-700 text-white px-4 py-2 z-50">Skip to content</a>
+
+    <!-- Navigation - Enhanced for Mobile and Performance -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 sm:py-4">
+            <div class="flex justify-between items-center">
+                <a href="/" class="text-xl sm:text-2xl font-bold flex items-center" title="What Is My IP Address - Home">
+                    <span class="text-secondary">What</span>
+                    <span class="text-gray-400 mx-1">Is</span>
+                    <span class="text-secondary">My</span>
+                    <span class="text-primary-700 font-extrabold mx-1">IP</span>
+                    <span class="text-gray-500 hidden sm:inline">Address</span>
+                </a>
+                
+                <!-- Desktop Navigation - Hidden on Small Screens -->
+                <nav class="hidden md:flex items-center space-x-4 sm:space-x-6" aria-label="Main navigation">
+                    <a href="/#my-ip" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">My IP</a>
+                    <a href="/#tools" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">IP Tools</a>
+                    <a href="/#faq" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">FAQ</a>
+                    <a href="/contact" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">Contact</a>
+                </nav>
+                
+                <!-- Mobile Menu Button - Only Visible on Small Screens -->
+                <button class="md:hidden text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 p-1 rounded-md" id="mobileMenuButton" aria-expanded="false" aria-label="Toggle navigation menu">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu - Enhanced for Accessibility and Performance -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100" aria-labelledby="mobileMenuButton">
+            <div class="container mx-auto px-4 py-2">
+                <nav class="flex flex-col space-y-1" aria-label="Mobile navigation">
+                    <a href="/#my-ip" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">My IP</a>
+                    <a href="/#tools" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">IP Tools</a>
+                    <a href="/#faq" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">FAQ</a>
+                    <a href="/contact" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
     <!-- Main Content -->
-    <main class="main-wrapper">
+    <main id="main-content" class="flex-grow">
         {% block content %}
         {% endblock %}
     </main>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-        <div class="row gy-4">
-            <div class="col-12 col-md-3">
-                <h4>About</h4>
-                <p>Get detailed information about IP addresses, including location, ISP, and network details with our free "What Is My IP" tool.</p>
+    <!-- Footer -->
+    <!-- Footer -->
+<footer class="bg-gray-800 text-white py-8 sm:py-12">
+    <div class="container mx-auto px-10">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9 sm:gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-3 sm:mb-4">About</h3>
+                <p class="text-gray-300 text-sm sm:text-base">Get detailed information about IP addresses, including location, ISP, and network details with our free "What Is My IP" tool.</p>
             </div>
-            <div class="col-12 col-md-3">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="/#my-ip">My IP</a></li>
-                    <li><a href="/#tools">IP Tools</a></li>
-                    <li><a href="/ip-lookup">IP Lookup</a></li>
-                  
+            <div>
+                <h3 class="text-xl font-bold mb-3 sm:mb-4">Quick Links</h3>
+                <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
+                    <li><a href="/#my-ip" class="hover:text-white transition font-medium">My IP</a></li>
+                    <li><a href="/#tools" class="hover:text-white transition font-medium">IP Tools</a></li>
+                    <li><a href="/ip-lookup" class="hover:text-white transition font-medium">IP Lookup</a></li>
                 </ul>
             </div>
-            <div class="col-12 col-md-3">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="/privacy">Privacy Policy</a></li>
-                    <li><a href="/terms">Terms of Service</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
+            <div>
+                <h3 class="text-xl font-bold mb-3 sm:mb-4">Legal</h3>
+                <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
+                    <li><a href="/privacy" class="hover:text-white transition font-medium">Privacy Policy</a></li>
+                    <li><a href="/terms" class="hover:text-white transition font-medium">Terms of Service</a></li>
+                    <li><a href="/contact" class="hover:text-white transition font-medium">Contact Us</a></li>
                 </ul>
             </div>
-            <div class="col-12 col-md-3">
-                <h4>Support</h4>
-                <p>For support: <a href="mailto:manikant007y@gmail.com">manikant007y@gmail.com</a></p>
+            <div>
+                <h3 class="text-xl font-bold mb-3 sm:mb-4">Support</h3>
+                <p class="text-gray-300 text-sm sm:text-base">For support: <a href="mailto:manikant007y@gmail.com" class="text-secondary hover:text-white transition font-medium">manikant007y@gmail.com</a></p>
             </div>
         </div>
-        <div class="row mt-4 pt-3 border-top">
-            <div class="col-12 text-center">
-                <p class="copyright">© {% now "Y" %} WhatIsMyIPAddress.World. All rights reserved.</p>
-            </div>
+        
+        <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700 text-center text-sm sm:text-lg font-semibold text-gray-400">
+            <p>© {% now "Y" %} WhatIsMyIPAddress.World. All rights reserved.</p>
         </div>
     </div>
 </footer>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="{% static 'ip_app/js/main.js' %}"></script>
-    {% block extra_js %}{% endblock %}
     
-    <!-- Cookie Consent Banner -->
-    <div class="cookie-consent" id="cookieConsent">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-9">
-                    <p class="mb-0">We use cookies to provide a better user experience. By using our site, you agree to our <a href="/privacy">Privacy Policy</a>.</p>
-                </div>
-                <div class="col-md-3 text-md-end mt-3 mt-md-0">
-                    <button class="btn btn-primary btn-sm" onclick="acceptCookies()">Accept</button>
-                    <button class="btn btn-outline-secondary btn-sm ms-2" onclick="declineCookies()">Decline</button>
+    <!-- Cookie Consent Banner - Enhanced for Mobile and Accessibility -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 sm:p-4 z-40 hidden" id="cookieConsent" aria-labelledby="cookieConsentTitle" role="dialog" aria-modal="true">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <p id="cookieConsentTitle" class="text-gray-700 text-xs sm:text-sm md:text-base mb-3 md:mb-0">We use cookies to provide a better user experience. By using our site, you agree to our <a href="/privacy" class="text-secondary hover:underline focus:outline-none focus:underline">Privacy Policy</a>.</p>
+                <div class="flex space-x-2 sm:space-x-3">
+                    <button onclick="acceptCookies()" class="bg-secondary hover:bg-secondary-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2">Accept</button>
+                    <button onclick="declineCookies()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">Decline</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Toast Container for Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
+
+    <!-- Scripts - Optimized Loading -->
+    <!-- Load critical scripts first -->
+    <script src="{% static 'ip_app/js/main.js' %}" defer></script>
+    
+    <!-- Load non-critical scripts with lower priority -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
     
     <script>
-        // Cookie Consent Script
+        // Mobile menu toggle with better accessibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener('click', function() {
+                    const expanded = menuButton.getAttribute('aria-expanded') === 'true' || false;
+                    menuButton.setAttribute('aria-expanded', !expanded);
+                    mobileMenu.classList.toggle('hidden');
+                    
+                    // Toggle icon between bars and times
+                    const icon = menuButton.querySelector('i');
+                    if (icon) {
+                        if (expanded) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        } else {
+                            icon.classList.remove('fa-bars');
+                            icon.classList.add('fa-times');
+                        }
+                    }
+                });
+            }
+            
+            // Enhanced loading spinner functions
+            window.showLoader = function(message = 'Loading IP information...') {
+                const loader = document.getElementById('loadingOverlay');
+                if (loader) {
+                    const messageElement = loader.querySelector('p');
+                    if (messageElement) messageElement.textContent = message;
+                    loader.classList.remove('opacity-0', 'pointer-events-none');
+                    // Set aria-busy for accessibility
+                    document.body.setAttribute('aria-busy', 'true');
+                }
+            }
+            
+            window.hideLoader = function() {
+                const loader = document.getElementById('loadingOverlay');
+                if (loader) {
+                    loader.classList.add('opacity-0', 'pointer-events-none');
+                    // Reset aria-busy
+                    document.body.setAttribute('aria-busy', 'false');
+                }
+            }
+            
+            // Improved toast notification system
+            window.showToast = function(message, type = 'info') {
+                // Remove any existing toasts
+                const existingToasts = document.querySelectorAll('.toast-notification');
+                existingToasts.forEach(toast => toast.remove());
+                
+                // Create toast container if it doesn't exist
+                let toastContainer = document.getElementById('toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.id = 'toast-container';
+                    toastContainer.className = 'fixed top-4 right-4 z-50 flex flex-col gap-2';
+                    document.body.appendChild(toastContainer);
+                }
+                
+                // Create toast with improved accessibility
+                const toast = document.createElement('div');
+                toast.className = 'toast-notification flex items-center p-3 rounded shadow-lg text-white transform transition-all duration-300 translate-x-full max-w-xs sm:max-w-sm';
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'polite');
+                
+                // Set background color based on type
+                if (type === 'success') {
+                    toast.classList.add('bg-green-600');
+                } else if (type === 'error') {
+                    toast.classList.add('bg-red-600');
+                } else {
+                    toast.classList.add('bg-primary-700');
+                }
+                
+                // Set icon based on type
+                let icon = 'info-circle';
+                if (type === 'success') icon = 'check-circle';
+                if (type === 'error') icon = 'exclamation-circle';
+                
+                toast.innerHTML = `
+                    <i class="fas fa-${icon} mr-2" aria-hidden="true"></i>
+                    <span class="text-sm sm:text-base">${message}</span>
+                    <button class="ml-auto text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 rounded-full p-1" onclick="this.parentElement.remove()" aria-label="Close notification">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                `;
+                
+                // Add to container
+                toastContainer.appendChild(toast);
+                
+                // Animate in
+                setTimeout(() => {
+                    toast.classList.remove('translate-x-full');
+                }, 10);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    toast.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 300);
+                }, 5000);
+            }
+            
+            // Check if cookie consent has been set
+            if (!getCookie('cookie_consent')) {
+                document.getElementById('cookieConsent').classList.remove('hidden');
+            }
+            
+            // Lazy load images
+            if ('loading' in HTMLImageElement.prototype) {
+                // Browser supports native lazy loading
+                const images = document.querySelectorAll('img[loading="lazy"]');
+                images.forEach(img => {
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                    }
+                });
+            } else {
+                // Fallback for browsers that don't support native lazy loading
+                const lazyImages = document.querySelectorAll('img[data-src]');
+                if (lazyImages.length > 0) {
+                    if ('IntersectionObserver' in window) {
+                        const imageObserver = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    const img = entry.target;
+                                    img.src = img.dataset.src;
+                                    img.removeAttribute('data-src');
+                                    imageObserver.unobserve(img);
+                                }
+                            });
+                        });
+                        lazyImages.forEach(img => imageObserver.observe(img));
+                    } else {
+                        // For older browsers
+                        // Simple scroll-based lazy loading
+                        const lazyLoad = function() {
+                            lazyImages.forEach(function(img) {
+                                if (isInViewport(img) && img.dataset.src) {
+                                    img.src = img.dataset.src;
+                                    img.removeAttribute('data-src');
+                                }
+                            });
+                        };
+                        
+                        // Check if element is in viewport
+                        function isInViewport(el) {
+                            const rect = el.getBoundingClientRect();
+                            return (
+                                rect.top >= 0 &&
+                                rect.left >= 0 &&
+                                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                            );
+                        }
+                        
+                        // Add event listeners
+                        window.addEventListener('scroll', lazyLoad);
+                        window.addEventListener('resize', lazyLoad);
+                        window.addEventListener('orientationchange', lazyLoad);
+                        
+                        // Initial check
+                        lazyLoad();
+                    }
+                }
+            }
+        });
+        
+        // Enhanced cookie functions with security improvements
         function setCookie(name, value, days) {
             let expires = "";
             if (days) {
@@ -163,7 +363,7 @@
                 date.setTime(date.getTime() + (days*24*60*60*1000));
                 expires = "; expires=" + date.toUTCString();
             }
-            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/; SameSite=Lax; Secure";
         }
         
         function getCookie(name) {
@@ -179,20 +379,23 @@
         
         function acceptCookies() {
             setCookie('cookie_consent', 'accepted', 365);
-            document.getElementById('cookieConsent').style.display = 'none';
+            document.getElementById('cookieConsent').classList.add('hidden');
+            // Show confirmation toast
+            if (window.showToast) {
+                window.showToast('Cookies accepted. Thank you!', 'success');
+            }
         }
         
         function declineCookies() {
             setCookie('cookie_consent', 'declined', 365);
-            document.getElementById('cookieConsent').style.display = 'none';
-        }
-        
-        // Check if user has already set cookie preference
-        window.addEventListener('DOMContentLoaded', () => {
-            if (getCookie('cookie_consent')) {
-                document.getElementById('cookieConsent').style.display = 'none';
+            document.getElementById('cookieConsent').classList.add('hidden');
+            // Show confirmation toast
+            if (window.showToast) {
+                window.showToast('Cookies declined. Some features may be limited.', 'info');
             }
-        });
+        }
     </script>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

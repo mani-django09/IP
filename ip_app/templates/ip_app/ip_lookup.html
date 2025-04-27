@@ -1,655 +1,2249 @@
 {% extends 'ip_app/base.html' %}
 {% load static %}
 
-{% block title %}IP Address Lookup | IP Locator Tool | Check Any IP{% endblock %}
+{% block title %}IP Address Lookup Tool | Check Any IP Location | WhatIsMyIPAddress.World{% endblock %}
 
-{% block extra_meta %}
-<meta name="description" content="Look up any IP address with our free IP locator tool. Find location, ISP, hostname, and network details for any IP address. Accurate IP lookup for IPv4 and IPv6.">
-<meta name="keywords" content="ip lookup, ip address lookup, ip locator, ip checker, check ip, lookup ip, find ip location, ip tracker, ip search">
-<!-- Open Graph Meta Tags -->
-<meta property="og:title" content="IP Address Lookup Tool | Locate Any IP Address">
-<meta property="og:description" content="Free lookup tool for any IP address. Get detailed location and network information for IPv4 and IPv6 addresses with our accurate IP locator.">
+{% block meta %}
+<!-- Primary Meta Tags -->
+<meta name="title" content="IP Address Lookup Tool | Free IP Geolocation Service">
+<meta name="description" content="Instantly look up any IP address location with our free IP address tool. Get detailed information including country, city, ISP, latitude, longitude and more.">
+<meta name="keywords" content="IP lookup, IP address location, geolocation tool, IP geolocation, IP tracker, what is my IP, find IP location">
+<meta name="author" content="WhatIsMyIPAddress.World">
+<meta name="robots" content="index, follow">
+<meta name="revisit-after" content="7 days">
+
+<!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:url" content="https://whatismyipaddress.world/">
+<meta property="og:title" content="IP Address Lookup Tool | Find Any IP Location">
+<meta property="og:description" content="Free IP lookup tool providing detailed information about any IP address including location, ISP, and network details. Look up any IP now!">
 <meta property="og:image" content="{% static 'ip_app/img/og-image.png' %}">
-<!-- Twitter Card Meta Tags -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="IP Address Lookup | Track Any IP Location">
-<meta name="twitter:description" content="Free IP locator tool. Find the location and details of any IP address with our accurate lookup service.">
-<meta name="twitter:image" content="{% static 'ip_app/img/og-image.png' %}">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://whatismyipaddress.world/">
+<meta property="twitter:title" content="IP Address Lookup Tool | Check Any IP Location">
+<meta property="twitter:description" content="Find the exact location of any IP address with our free IP lookup tool. Get detailed geolocation data and network information instantly.">
+<meta property="twitter:image" content="{% static 'ip_app/img/twitter-image.png' %}">
+
 <!-- Canonical URL -->
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta rel="canonical" href="https://whatismyipaddress.world/ip-lookup">
 {% endblock %}
 
+{% block extra_css %}
+<style>
+/* Fix for header positioning */
+header, .site-header {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 100 !important;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Logo positioning fix */
+.site-logo, .logo {
+    display: inline-block !important;
+    margin: 0 !important;
+}
+
+/* Loading spinner */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+.spinner-overlay.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(#0000 10%, #4A90E2);
+    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 12px),#000 0);
+    mask: radial-gradient(farthest-side,#0000 calc(100% - 12px),#000 0);
+    animation: spin 1s infinite linear;
+}
+/* Add to your existing <style> tag */
+    .ip-info-box {
+        background-color: #1e3a8a; /* This should match your primary-800 color */
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Make sure backgrounds are properly set */
+    #ip-results {
+        background-color: white;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Fix for the hero section */
+    .bg-gradient-to-b {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Make sure the container is above the transition */
+    .container {
+        position: relative;
+        z-index: 3;
+    }
+@keyframes spin {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+/* Map container styles */
+.map-container {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    height: 100%;
+    min-height: 380px;
+    position: relative;
+}
+
+/* IP info box styling */
+.ip-info-box {
+    background-color: #1e3a8a; /* Primary-800 color */
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    height: 100%;
+}
+
+/* Improved detail items */
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.07);
+    transition: all 0.2s ease;
+}
+
+.detail-item:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.detail-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Card styles */
+.card {
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Hero section clean transition fix */
+.section-transition {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+    overflow: hidden;
+}
+
+.section-transition-curve {
+    width: 100%;
+    height: 32px;
+    background-color: white;
+    border-radius: 100% 100% 0 0 / 100% 100% 0 0;
+    transform: translateY(16px);
+}
+/* Add this CSS to your existing styles to fix the padding issues */
+
+/* Fix padding for the security tips section */
+.py-16.sm\:py-20.bg-gradient-to-b.from-white.to-gray-50 {
+    padding-top: 4rem !important; /* Increased top padding */
+    padding-bottom: 4rem !important; /* Increased bottom padding */
+}
+
+/* Enhance the section title for better spacing */
+.py-16.sm\:py-20.bg-gradient-to-b.from-white.to-gray-50 h2.text-3xl {
+    margin-bottom: 1.5rem !important; /* Increase bottom margin of the heading */
+    padding-top: 1rem !important; /* Add padding to the top */
+}
+
+/* Fix the cards in the tips section */
+.bg-white.rounded-xl.p-6.shadow-md {
+    padding: 1.75rem !important; /* Increase padding inside cards */
+    margin-bottom: 1rem !important; /* Add spacing between cards */
+}
+
+/* Enhance icon containers */
+.w-12.h-12.rounded-full {
+    margin-bottom: 1.25rem !important; /* Add more space below icons */
+}
+
+/* Improve spacing for tip titles */
+.text-xl.font-bold.text-gray-800.mb-3 {
+    margin-bottom: 1rem !important; /* Increase space below tip titles */
+}
+
+/* Better spacing for the button area */
+.mt-8.text-center.lg\:hidden, 
+.hidden.lg\:block {
+    margin-top: 2.5rem !important; /* Increase top margin */
+    padding-top: 1rem !important; /* Add padding to the top */
+}
+
+/* Fix spacing in the security cards from the screenshots */
+.bg-white.rounded-xl.p-6.shadow-md.hover\:shadow-lg.transition-all.border.border-gray-100 {
+    padding: 2rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* Add more spacing around icon areas in the security tips */
+.w-12.h-12.rounded-full.bg-purple-100,
+.w-12.h-12.rounded-full.bg-blue-100,
+.w-12.h-12.rounded-full.bg-green-100,
+.w-12.h-12.rounded-full.bg-red-100,
+.w-12.h-12.rounded-full.bg-amber-100,
+.w-12.h-12.rounded-full.bg-teal-100,
+.w-12.h-12.rounded-full.bg-indigo-100,
+.w-12.h-12.rounded-full.bg-pink-100 {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+    margin-bottom: 1.5rem !important;
+    margin-right: 1rem !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Improve spacing for the "Check my IP now" button */
+.btn-secondary.py-3.px-6.rounded-xl.inline-flex.items-center {
+    padding: 0.875rem 1.5rem !important;
+    margin-top: 1.5rem !important;
+}
+
+/* Improve style of the "QUICK TIPS" label */
+.inline-block.bg-primary-600\/10.text-primary-700.rounded-full.px-4.py-1\.5.text-sm.font-medium.mb-4 {
+    margin-bottom: 1.25rem !important;
+    padding: 0.5rem 1rem !important;
+}
+
+/* Add proper spacing to the sticky container */
+.sticky.top-24 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+
+/* Complete UI Enhancement for IP Security Tips Section */
+
+/* Section Container Enhancements */
+.py-16.sm\:py-20.bg-gradient-to-b.from-white.to-gray-50 {
+    padding: 4rem 0 5rem !important;
+    background: #f8fafc !important;
+}
+
+/* Main heading styling */
+.text-3xl.sm\:text-4xl.font-bold.mb-6 {
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    margin-bottom: 0.75rem !important;
+    letter-spacing: -0.025em !important;
+}
+
+/* Subheading styling */
+.text-gray-600.mb-6 {
+    font-size: 1.125rem !important;
+    color: #64748b !important;
+    margin-bottom: 2.5rem !important;
+    max-width: 650px !important;
+}
+
+/* Card container layout */
+.w-full.lg\:w-2\/3 .grid.grid-cols-1.md\:grid-cols-2.gap-6 {
+    gap: 1.5rem !important;
+}
+
+/* Security tip cards */
+.bg-white.rounded-xl.p-6.shadow-md.hover\:shadow-lg.transition-all.border.border-gray-100 {
+    padding: 1.75rem !important;
+    border-radius: 0.75rem !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03) !important;
+    transition: all 0.2s ease-in-out !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.bg-white.rounded-xl.p-6.shadow-md.hover\:shadow-lg.transition-all.border.border-gray-100:hover {
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Icon styling */
+.w-12.h-12.rounded-full {
+    width: 3rem !important;
+    height: 3rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 1.25rem !important;
+    background-color: #eef2ff !important;
+}
+
+.w-12.h-12.rounded-full.bg-purple-100 { background-color: #ede9fe !important; }
+.w-12.h-12.rounded-full.bg-blue-100 { background-color: #dbeafe !important; }
+.w-12.h-12.rounded-full.bg-green-100 { background-color: #dcfce7 !important; }
+.w-12.h-12.rounded-full.bg-red-100 { background-color: #fee2e2 !important; }
+.w-12.h-12.rounded-full.bg-amber-100 { background-color: #fef3c7 !important; }
+.w-12.h-12.rounded-full.bg-teal-100 { background-color: #ccfbf1 !important; }
+.w-12.h-12.rounded-full.bg-indigo-100 { background-color: #e0e7ff !important; }
+.w-12.h-12.rounded-full.bg-pink-100 { background-color: #fce7f3 !important; }
+
+/* Icon colors */
+.text-purple-600 { color: #7c3aed !important; }
+.text-blue-600 { color: #2563eb !important; }
+.text-green-600 { color: #16a34a !important; }
+.text-red-600 { color: #dc2626 !important; }
+.text-amber-600 { color: #d97706 !important; }
+.text-teal-600 { color: #0d9488 !important; }
+.text-indigo-600 { color: #4f46e5 !important; }
+.text-pink-600 { color: #db2777 !important; }
+
+/* Tip heading styling */
+.text-xl.font-bold.text-gray-800.mb-3 {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.75rem !important;
+    color: #1e293b !important;
+    line-height: 1.4 !important;
+}
+
+/* Tip paragraph styling */
+.text-gray-600 {
+    color: #64748b !important;
+    line-height: 1.6 !important;
+    font-size: 0.975rem !important;
+}
+
+/* Strong text emphasis */
+.text-gray-600 strong {
+    color: #334155 !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar styling */
+.w-full.lg\:w-1\/3 .sticky.top-24 {
+    padding: 2rem !important;
+    background-color: #ffffff !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03) !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+/* "Check my IP now" button styling */
+.btn-secondary.py-3.px-6.rounded-xl.inline-flex.items-center {
+    background-color: #3b82f6 !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.5rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+    text-decoration: none !important;
+    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2) !important;
+}
+
+.btn-secondary.py-3.px-6.rounded-xl.inline-flex.items-center:hover {
+    background-color: #2563eb !important;
+    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.25) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Mobile button container */
+.mt-8.text-center.lg\:hidden {
+    margin-top: 2.5rem !important;
+}
+
+/* ===== Enhanced FAQ Section ===== */
+#faq {
+    background-color: #f8fafc !important;
+    padding: 4rem 0 !important;
+}
+
+#faq .text-center.max-w-3xl.mx-auto.mb-12 h2 {
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    color: #1e293b !important;
+    margin-bottom: 0.75rem !important;
+}
+
+#faq .text-center.max-w-3xl.mx-auto.mb-12 p {
+    font-size: 1.125rem !important;
+    color: #64748b !important;
+}
+
+/* FAQ accordion items */
+#faq .border.border-gray-200.rounded-lg.overflow-hidden {
+    border-radius: 0.75rem !important;
+    margin-bottom: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+
+#faq .faq-btn {
+    padding: 1.25rem 1.5rem !important;
+}
+
+#faq .faq-btn span {
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+
+#faq .faq-content {
+    padding: 0 1.5rem 1.5rem !important;
+}
+
+#faq .faq-content p {
+    margin-bottom: 1rem !important;
+    color: #64748b !important;
+}
+
+#faq .faq-content ul {
+    margin-left: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+#faq .faq-content ul li {
+    margin-bottom: 0.5rem !important;
+}
+
+/* ===== Enhanced CTA Section ===== */
+.py-6.sm\:py-10.bg-gradient-to-r.from-primary-700.to-primary-800.text-white {
+    padding: 3rem 0 !important;
+    background: linear-gradient(to right, #1e40af, #1e3a8a) !important;
+}
+
+/* ===== Network & Security Cards (from screenshots) ===== */
+/* This styling mimics the clean cards in your screenshot */
+.network-security-card {
+    background-color: #ffffff !important;
+    border-radius: 1rem !important;
+    padding: 1.5rem !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    height: 100% !important;
+}
+
+.network-security-card h3 {
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin-bottom: 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.network-security-card h3 i {
+    margin-right: 0.75rem !important;
+    color: #3b82f6 !important;
+}
+
+.network-security-card ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.network-security-card li {
+    display: flex !important;
+    align-items: flex-start !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+.network-security-card li:not(:last-child) {
+    border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.network-security-card .check-icon {
+    color: #22c55e !important;
+    margin-right: 0.75rem !important;
+    flex-shrink: 0 !important;
+}
+
+.network-security-card p {
+    margin: 0 !important;
+    color: #64748b !important;
+}
+
+.network-security-card strong {
+    color: #334155 !important;
+    font-weight: 600 !important;
+}
+
+/* Quote styling in cards */
+.network-security-card blockquote {
+    margin-top: 1.5rem !important;
+    padding-top: 1rem !important;
+    border-top: 1px solid #f1f5f9 !important;
+    font-style: italic !important;
+    color: #64748b !important;
+}
+
+.network-security-card blockquote footer {
+    margin-top: 0.5rem !important;
+    font-size: 0.875rem !important;
+    color: #94a3b8 !important;
+}
+
+/* Custom search width */
+.custom-search-width {
+    max-width: 560px;
+}
+@media (min-width: 640px) {
+    .custom-search-width {
+        max-width: 800px;
+    }
+}
+</style>
+{% endblock %}
 {% block content %}
-    <!-- Hero Section -->
-    <section class="search-section py-5">
-        <div class="container">
-            <h1 class="text-center text-white mb-3">IP Address Lookup Tool</h1>
-            <h2 class="text-center text-white mb-4 h5 fw-normal">Find Detailed Information About Any IP Address</h2>
-            <div class="search-box mx-auto" style="max-width: 600px;">
-                <input type="text" 
-                       id="ip-search" 
-                       class="search-input"
-                       placeholder="Enter any IP address to lookup..."
-                       aria-label="Enter an IP address to lookup"
-                       onkeypress="handleSearchKeyPress(event)">
-                       <button onclick="searchIP()" class="search-button">
-                    Lookup IP
+<!-- Loading Spinner Overlay -->
+<div class="spinner-overlay" id="spinner-overlay">
+    <div class="spinner"></div>
+</div>
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-b from-primary-800 to-primary-700 py-8 sm:py-10 px-4 relative">
+    <!-- Container for content -->
+    <div class="container mx-auto max-w-3xl relative z-10">
+        <!-- Hero Content -->
+        <div class="text-center mb-6">
+            <h1 class="text-white text-2xl sm:text-3xl md:text-4xl font-extrabold mb-3">
+                IP Address Lookup Tool
+            </h1>
+            <p class="text-white/90 text-sm sm:text-base max-w-md mx-auto">
+                {% if ip_searched %}
+                Looking up information for IP: {{ ip_data.query }}
+                {% else %}
+                Your IP address is: {{ ip_data.query }}. Search below to look up any other IP address.
+                {% endif %}
+            </p>
+        </div>
+        
+        <!-- Search Box -->
+        <div class="custom-search-width mx-auto">
+            <form method="GET" action="{% url 'ip_lookup' %}" class="flex rounded-lg overflow-hidden shadow-lg" id="ip-lookup-form">
+                <input 
+                    type="text" 
+                    id="ip-search" 
+                    name="ip"
+                    class="flex-grow px-4 py-3 text-gray-800 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-secondary"
+                    placeholder="Enter an IP address to lookup..."
+                    value="{{ request.GET.ip|default:'' }}"
+                    aria-label="IP address lookup"
+                >
+                <button 
+                    type="submit" 
+                    class="bg-secondary hover:bg-secondary-600 text-white font-medium px-5 py-3 text-sm sm:text-base whitespace-nowrap transition-colors duration-200"
+                    id="lookup-button"
+                >
+                    Look Up IP
                 </button>
+            </form>
+        </div>
+        
+        <!-- Feature Tags -->
+        <div class="flex flex-wrap justify-center gap-2 mt-4">
+            <div class="bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-medium">
+                Detailed Reports
             </div>
-            <div class="text-center mt-3">
-                <p class="text-white-50">Enter an IPv4 or IPv6 address to get instant results</p>
+            <div class="bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-medium">
+                Fast Results
+            </div>
+            <div class="bg-white/20 text-white px-3 py-1.5 rounded-full text-xs font-medium">
+                IPv4/IPv6 Support
             </div>
         </div>
-    </section>
-
-    <!-- Features Section -->
-    
-    
-    <!-- IP Lookup Results Section -->
-    <section id="ip-lookup-results" class="ip-info-section">
-        <div class="container">
-            <div class="row">
-                <!-- IP Information Card -->
-                <div class="col">
-                    <div class="ip-info-box">
-                        <div class="ip-info-content">
-                            <div class="ip-info-header"><i class="fas fa-search me-2"></i>IP Lookup Results:</div>
-                            
-                            <div class="lookup-instruction text-center py-5" id="lookup-instruction">
-                                <i class="fas fa-search fa-3x mb-3" style="color: rgba(255,255,255,0.3);"></i>
-                                <h3 class="text-white mb-2">Enter an IP Address Above</h3>
-                                <p class="text-white-50">Lookup any IPv4 or IPv6 address to see detailed information</p>
-                            </div>
-                            
-                            <div class="lookup-results" id="lookup-results" style="display: none;">
-                                <!-- IP Info Rows -->
-                                <div class="ip-info-row">
-                                    <div class="info-label">IP Address:</div>
-                                    <div class="info-value" id="ip-address">Loading...</div>
-                                </div>
-                                <div class="ip-info-row">
-                                    <div class="info-label">IP Type:</div>
-                                    <div class="info-value" id="ip-type">Checking...</div>
-                                </div>
-                                
-                                <!-- Details Grid -->
-                                <div class="ip-details">
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-wifi"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Internet Service Provider:</span>
-                                            <span class="detail-value" id="isp">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">City:</span>
-                                            <span class="detail-value" id="city">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-globe"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Region/State:</span>
-                                            <span class="detail-value" id="region">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-flag"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Country:</span>
-                                            <span class="detail-value" id="country">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-envelope"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Postal Code:</span>
-                                            <span class="detail-value" id="postal">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-building"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Organization:</span>
-                                            <span class="detail-value" id="org">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-clock"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">Timezone:</span>
-                                            <span class="detail-value" id="timezone">Loading...</span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="detail-row">
-                                        <div class="detail-icon">
-                                            <i class="fas fa-lock"></i>
-                                        </div>
-                                        <div class="detail-content">
-                                            <span class="detail-label">VPN/Proxy Status:</span>
-                                            <span class="detail-value" id="vpn-status">Analyzing...</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 d-none d-md-block">
-                    <div class="map-container">
-                        <div id="map" class="map-view"></div>
-                        <div class="map-footer">
-                            <p class="location-text" id="location">Enter an IP address to see its location</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Mobile Map Column -->
-                <div class="col-12 d-block d-md-none">
-                    <div class="map-container-mobile">
-                        <div id="map-mobile" class="map-view"></div>
-                        <div class="map-footer">
-                            <p class="location-text" id="location-mobile">Enter an IP address to see its location</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="key-features py-5 bg-light">
-        <div class="container">
-            <div class="row text-center">
-                <div class="col-md-4 mb-4">
-                    <i class="fas fa-map-marked-alt fa-3x text-primary mb-3"></i>
-                    <h3>Precise Geolocation</h3>
-                    <p>Get accurate location data for any IP address worldwide</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <i class="fas fa-network-wired fa-3x text-primary mb-3"></i>
-                    <h3>Network Details</h3>
-                    <p>View ISP, organization, and connection information</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                    <h3>Security Analysis</h3>
-                    <p>Check for VPN, proxy, and potential security risks</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    <div class="wave-section">
-        <div class="wave-container"></div>
     </div>
-    <!-- How to Use Section -->
-    <section class="ip-education py-5 bg-light">
-        <div class="container">
-            <h2 class="section-title text-center mb-5">How to Use Our IP Lookup Tool</h2>
+    
+    <!-- Clean Transition to Next Section -->
+    <div class="section-transition">
+        <div class="section-transition-curve"></div>
+    </div>
+</section>
+
+<!-- IP Results Section -->
+<section id="ip-results" class="py-8 sm:py-12 relative bg-white">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <!-- IP Information Card -->
+            <div class="ip-info-box">
+                <div class="relative z-10">
+                    <div class="flex items-center gap-2 pb-3 border-b border-white/10 mb-4">
+                        <i class="fas fa-search"></i>
+                        <h2 class="text-lg sm:text-xl font-semibold">IP Information Results</h2>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="flex flex-wrap justify-between items-center p-2 hover:bg-white/5 rounded transition">
+                            <div class="text-gray-200 mr-2">IP Address:</div>
+                            <div class="font-mono bg-white/10 px-2 sm:px-3 py-1 rounded text-sm sm:text-base break-all" id="ip-address">{{ ip_data.query|default:"Loading..." }}</div>
+                        </div>
+                        
+                        <div class="flex flex-wrap justify-between items-center p-2 hover:bg-white/5 rounded transition">
+                            <div class="text-gray-200 mr-2">IP Type:</div>
+                            <div class="font-mono bg-white/10 px-2 sm:px-3 py-1 rounded text-sm sm:text-base break-all" id="ip-type">{{ ip_type|default:"Loading..." }}</div>
+                        </div>
+                    </div>
+                    
+                    <!-- IP Details Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-5">
+                        <!-- ISP Info -->
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-wifi text-secondary"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-300">Internet Service Provider</div>
+                                <div class="font-medium text-sm sm:text-base" id="isp">{{ ip_data.isp|default:"Loading..." }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- City Info -->
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-map-marker-alt text-secondary"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-300">City</div>
+                                <div class="font-medium text-sm sm:text-base" id="city">{{ ip_data.city|default:"Loading..." }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Region Info -->
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-globe text-secondary"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-300">Region/State</div>
+                                <div class="font-medium text-sm sm:text-base" id="region">{{ ip_data.regionName|default:"Loading..." }}</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Country Info -->
+                        <div class="detail-item">
+                            <div class="detail-icon">
+                                <i class="fas fa-flag text-secondary"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-300">Country</div>
+                                <div class="font-medium text-sm sm:text-base" id="country">{{ ip_data.country|default:"Loading..." }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container hidden md:block">
+                <div id="map" class="h-full bg-gray-100 relative" style="min-height: 380px;">
+                    <!-- Placeholder shown before map loads -->
+                    <div id="map-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-4">
+                            <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p class="text-gray-500 text-sm">Loading map...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-3 text-center text-white">
+                    <p class="mb-1 text-sm sm:text-base font-medium" id="location">{{ ip_data.city|default:"" }}, {{ ip_data.regionName|default:"" }}, {{ ip_data.country|default:"" }}</p>
+                    <div class="text-xs sm:text-sm text-gray-300 flex flex-wrap justify-center items-center gap-2">
+                        <span><i class="fas fa-info-circle mr-1"></i> Location approximate based on IP data</span>
+                    </div>
+                </div>
+            </div>
             
-            <div class="row mb-4">
-                <div class="col-lg-6 mb-4">
-                    <div class="info-card h-100">
-                        <h3><i class="fas fa-question-circle text-primary me-2"></i>Step-by-Step Guide</h3>
-                        <ol class="feature-list">
-                            <li><strong>Enter an IP Address:</strong> Type any IPv4 or IPv6 address into the search box at the top of the page.</li>
-                            <li><strong>Click "Lookup IP":</strong> Or simply press Enter to initiate the search.</li>
-                            <li><strong>View Results:</strong> The tool will display detailed information about the IP address.</li>
-                            <li><strong>Explore Map:</strong> See the approximate geographic location on the interactive map.</li>
-                            <li><strong>Analyze Details:</strong> Review network information, location data, and security status.</li>
-                        </ol>
-                        <p>Our IP lookup tool supports both IPv4 addresses (like 192.168.1.1) and IPv6 addresses (like 2001:0db8:85a3:0000:0000:8a2e:0370:7334).</p>
+            <!-- Mobile Map (visible only on mobile) -->
+            <div class="md:hidden map-container">
+                <div id="map-mobile" class="h-full bg-gray-100 relative" style="min-height: 300px;">
+                    <!-- Mobile placeholder -->
+                    <div id="map-mobile-placeholder" class="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div class="text-center p-4">
+                            <div class="inline-block w-8 h-8 border-4 border-secondary border-t-transparent rounded-full animate-spin mb-2"></div>
+                            <p class="text-gray-500 text-sm">Loading map...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-black/70 backdrop-blur-sm p-3 text-center text-white">
+                    <p class="mb-1 text-sm font-medium" id="location-mobile">{{ ip_data.city|default:"" }}, {{ ip_data.regionName|default:"" }}, {{ ip_data.country|default:"" }}</p>
+                    <div class="text-xs text-gray-300 flex flex-wrap justify-center items-center gap-2">
+                        <span><i class="fas fa-info-circle mr-1"></i> Location approximate based on IP data</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Details Section -->
+<section id="details" class="py-10 sm:py-14 bg-gray-50">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <!-- Location Information -->
+            <div class="card p-6 sm:p-8">
+                <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-5 flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                        <i class="fas fa-map-marked-alt text-secondary"></i>
+                    </div>
+                    Location Information
+                </h3>
+                <div class="space-y-3 sm:space-y-4">
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Country:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="location-country">{{ ip_data.country|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Region:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="location-region">{{ ip_data.regionName|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">City:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="location-city">{{ ip_data.city|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Postal Code:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="location-postal">{{ ip_data.zip|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Coordinates:</div>
+                        <div class="text-gray-700 font-mono text-sm sm:text-base bg-gray-100 px-2 py-1 rounded" id="location-coordinates">{{ ip_data.lat|default:"" }}, {{ ip_data.lon|default:"" }}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Network Information -->
+            <div class="card p-6 sm:p-8">
+                <h3 class="text-lg sm:text-xl font-semibold mb-4 sm:mb-5 flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center mr-3">
+                        <i class="fas fa-network-wired text-secondary"></i>
+                    </div>
+                    Network Information
+                </h3>
+                <div class="space-y-3 sm:space-y-4">
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Organization:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="org">{{ ip_data.org|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">AS Number:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="as">{{ ip_data.as|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Timezone:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="timezone">{{ ip_data.timezone|default:"Loading..." }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Connection Type:</div>
+                        <div class="text-gray-700 text-sm sm:text-base" id="connection-type">{{ connection_type|default:"Broadband" }}</div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 border-b border-gray-100 hover:bg-gray-50 rounded-lg transition">
+                        <div class="font-medium">Security Status:</div>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block h-3 w-3 rounded-full {% if security_status == 'Secure' %}bg-green-500{% elif security_status == 'VPN/Proxy Detected' %}bg-yellow-500{% else %}bg-gray-500{% endif %}"></span>
+                            <span class="text-gray-700 text-sm sm:text-base" id="security-status">{{ security_status|default:"Unknown" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features & Benefits Section -->
+<section class="py-12 sm:py-16 bg-white">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4">Why Use Our IP Lookup Tool?</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">Our comprehensive IP address lookup tool provides detailed information about any IP address. Whether you need to trace an IP for security, verify locations, or troubleshoot network issues, our tool delivers accurate results instantly.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-tachometer-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Fast & Accurate Results</h3>
+                <p class="text-gray-600">Our IP lookup tool delivers results in milliseconds with highly accurate geolocation data from multiple reliable sources.</p>
+            </div>
+            
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-map-marked-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Detailed Location Data</h3>
+                <p class="text-gray-600">Get comprehensive location information including country, region, city, postal code, and precise coordinates for any IP address.</p>
+            </div>
+            
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Security Insights</h3>
+                <p class="text-gray-600">Identify potentially malicious IPs by checking if they're associated with VPNs, proxies, or known suspicious networks.</p>
+            </div>
+            
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Network Information</h3>
+                <p class="text-gray-600">View detailed network data including ISP, organization, AS number, and connection type for technical analysis.</p>
+            </div>
+            
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">IPv4 & IPv6 Support</h3>
+                <p class="text-gray-600">Our tool fully supports both IPv4 and IPv6 addresses, providing complete coverage for all IP lookup needs.</p>
+            </div>
+            
+            <div class="card p-6">
+                <div class="text-secondary text-3xl mb-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-3">Visual Mapping</h3>
+                <p class="text-gray-600">See IP locations visually with our interactive maps, making it easy to understand geographical context.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Common Use Cases Section -->
+<section class="py-12 sm:py-16 bg-gray-50">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4">Common IP Lookup Use Cases</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">Our IP lookup tool is used by professionals across various industries for many different purposes. Here are some of the most common use cases:</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-shield-alt text-secondary mr-3"></i>
+                    Security & Fraud Prevention
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Identify suspicious login attempts from unusual locations</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Verify the source of potentially fraudulent transactions</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Block malicious IP addresses involved in cyber attacks</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Verify user location claims for secure access controls</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-server text-secondary mr-3"></i>
+                    IT Administration
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Troubleshoot network connectivity issues and routing problems</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Configure firewall rules and access control lists</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Verify VPN and proxy connections are working properly</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Identify the source of server access and authentication attempts</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-globe text-secondary mr-3"></i>
+                    Content Delivery & Geolocation
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Deliver location-specific content to users based on their IP</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Customize user experiences based on geographic location</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Implement regional pricing or availability of services</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Route users to the nearest server for optimal performance</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-chart-bar text-secondary mr-3"></i>
+                    Analytics & Market Research
+                </h3>
+                <ul class="space-y-3">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Analyze website visitor demographics by region</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Understand geographic distribution of your customer base</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Identify potential new markets based on visitor location data</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                        <span class="text-gray-600">Measure advertising campaign effectiveness by region</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Enhanced Common IP Lookup Use Cases Section -->
+<section class="py-12 sm:py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl sm:text-3xl font-bold mb-4">Why Millions Trust WhatIsMyIPAddress.World</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">Discover how our powerful "What Is My IP Address" tool helps users worldwide protect their privacy, troubleshoot networks, and gain insights about their digital footprint.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Security Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-secondary transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-gray-800">
+                    <div class="bg-secondary/10 p-3 rounded-full mr-4">
+                        <i class="fas fa-shield-alt text-secondary text-2xl"></i>
+                    </div>
+                    Security & Privacy Protection
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Verify Your Digital Identity</h4>
+                            <p class="text-gray-600">Check <strong>what is my IP address</strong> to confirm your online identity hasn't been compromised through unauthorized VPN or proxy connections.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Detect Security Threats</h4>
+                            <p class="text-gray-600">Use WhatIsMyIPAddress.World to identify suspicious IP addresses attempting to access your accounts or networks.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-green-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Guard Against Spoofing</h4>
+                            <p class="text-gray-600">Regularly <strong>check my IP</strong> to ensure your network hasn't been compromised by IP spoofing attacks.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <blockquote class="italic text-gray-600">
+                        "After suspecting unauthorized access to my accounts, I used <strong>WhatIsMyIPAddress.World</strong> to verify my IP and discovered someone was attempting to access my accounts from another country."
+                        <footer class="mt-2 text-sm font-medium text-gray-500">— Security-conscious user</footer>
+                    </blockquote>
+                </div>
+            </div>
+            
+            <!-- Network Troubleshooting Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-primary-600 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-gray-800">
+                    <div class="bg-primary-600/10 p-3 rounded-full mr-4">
+                        <i class="fas fa-network-wired text-primary-600 text-2xl"></i>
+                    </div>
+                    Network Troubleshooting
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Diagnose Connection Issues</h4>
+                            <p class="text-gray-600">When your internet is unstable, <strong>locate my IP</strong> with our tool to detect if your ISP has assigned you a problematic IP range.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Confirm VPN Functionality</h4>
+                            <p class="text-gray-600">Verify <strong>my IP address</strong> has changed after connecting to a VPN to ensure your traffic is properly routed.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-blue-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-blue-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Resolve Network Conflicts</h4>
+                            <p class="text-gray-600">Use our tool to <strong>check my IP</strong> when experiencing network conflicts in home or office environments.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <blockquote class="italic text-gray-600">
+                        "When my smart home devices stopped connecting properly, I used <strong>WhatIsMyIPAddress.World</strong> to confirm my router had been assigned a new IP by my ISP, which helped resolve the issue quickly."
+                        <footer class="mt-2 text-sm font-medium text-gray-500">— Home network user</footer>
+                    </blockquote>
+                </div>
+            </div>
+            
+            <!-- Geo-verification Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-purple-600 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-gray-800">
+                    <div class="bg-purple-600/10 p-3 rounded-full mr-4">
+                        <i class="fas fa-globe-americas text-purple-600 text-2xl"></i>
+                    </div>
+                    Content & Service Access
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-purple-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Access Geo-Restricted Content</h4>
+                            <p class="text-gray-600">Check <strong>what is my IP</strong> to understand why certain content might be unavailable in your region.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-purple-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Optimize Content Delivery</h4>
+                            <p class="text-gray-600">Publishers and content creators use WhatIsMyIPAddress.World to ensure their CDNs are serving optimal content based on user location.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-purple-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-purple-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Verify Regional Compliance</h4>
+                            <p class="text-gray-600">Businesses use our tool to <strong>locate my IP</strong> and ensure services comply with region-specific regulations.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <blockquote class="italic text-gray-600">
+                        "Traveling internationally, I needed to access my banking portal which was blocking me. Using <strong>WhatIsMyIPAddress.World</strong> helped me understand why and contact my bank with the necessary information."
+                        <footer class="mt-2 text-sm font-medium text-gray-500">— International traveler</footer>
+                    </blockquote>
+                </div>
+            </div>
+            
+            <!-- Business Intelligence Card -->
+            <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-amber-600 transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                <h3 class="text-xl font-bold mb-6 flex items-center text-gray-800">
+                    <div class="bg-amber-600/10 p-3 rounded-full mr-4">
+                        <i class="fas fa-chart-line text-amber-600 text-2xl"></i>
+                    </div>
+                    Business & Analytics
+                </h3>
+                <ul class="space-y-4">
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-amber-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Customer Insights</h4>
+                            <p class="text-gray-600">Businesses use <strong>whatismyipaddress</strong> tools to analyze customer demographics and improve regional marketing strategies.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-amber-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Fraud Prevention</h4>
+                            <p class="text-gray-600">E-commerce platforms verify transaction origins with <strong>my IP address</strong> lookup to detect and prevent fraudulent purchases.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 flex items-center justify-center mt-0.5 mr-3">
+                            <i class="fas fa-check text-amber-600 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Website Security</h4>
+                            <p class="text-gray-600">Webmasters use WhatIsMyIPAddress.World to <strong>check my IP</strong> and configure secure access to administrative areas.</p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <blockquote class="italic text-gray-600">
+                        "As an e-commerce manager, I regularly use <strong>WhatIsMyIPAddress.World</strong> to analyze where our customers are coming from and optimize our delivery networks accordingly."
+                        <footer class="mt-2 text-sm font-medium text-gray-500">— Online retail executive</footer>
+                    </blockquote>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Bottom Wave Transition -->
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-10 sm:h-16 text-gray-50">
+            <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="currentColor"></path>
+        </svg>
+    </div>
+</section>
+
+<!-- Why Monitor Your IP - New Engaging Section -->
+<section class="py-16 sm:py-20 bg-gray-50">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="flex flex-col md:flex-row gap-12 md:gap-20 items-center">
+            <!-- Left Content -->
+            <div class="w-full md:w-1/2">
+                <div class="bg-secondary/10 text-secondary rounded-full px-4 py-1.5 text-sm font-medium inline-block mb-4">IP MONITORING</div>
+                <h2 class="text-3xl sm:text-4xl font-bold mb-6">Why You Should Check Your IP Regularly</h2>
+                <p class="text-gray-600 mb-8">At <strong>WhatIsMyIPAddress.World</strong>, we recommend regularly checking <strong>what is my IP address</strong> to maintain your digital security and privacy. Here's why:</p>
+                
+                <div class="space-y-5">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center mr-4 mt-1">
+                            <i class="fas fa-search text-secondary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Detect VPN/Proxy Issues</h3>
+                            <p class="text-gray-600">If you use a VPN, regularly <strong>check my IP</strong> to confirm your VPN is working correctly and not leaking your actual location.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center mr-4 mt-1">
+                            <i class="fas fa-exclamation-triangle text-secondary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Identify Unauthorized Access</h3>
+                            <p class="text-gray-600">Unexpected changes to <strong>my IP address</strong> could indicate network intrusions or unauthorized router access.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center mr-4 mt-1">
+                            <i class="fas fa-globe text-secondary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Verify Geolocation Data</h3>
+                            <p class="text-gray-600">Know what websites see when they <strong>locate my IP</strong> to understand potential regional restrictions or content limitations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center mr-4 mt-1">
+                            <i class="fas fa-shield-alt text-secondary"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Enhance Privacy Practices</h3>
+                            <p class="text-gray-600">Understanding <strong>what is my IP</strong> reveals about you helps implement better privacy and security measures across your devices.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-6 mb-4">
-                    <div class="info-card h-100">
-                        <h3><i class="fas fa-lightbulb text-primary me-2"></i>Common Uses for IP Lookup</h3>
-                        <ul class="feature-list">
-                            <li><strong>Verify Server Locations:</strong> Confirm where a website's servers are physically located.</li>
-                            <li><strong>Check Email Sources:</strong> Look up the origin of suspicious emails.</li>
-                            <li><strong>Network Diagnostics:</strong> Troubleshoot connection issues by identifying network characteristics.</li>
-                            <li><strong>Security Research:</strong> Investigate potentially malicious IP addresses.</li>
-                            <li><strong>VPN Verification:</strong> Confirm your VPN service is correctly masking your real location.</li>
-                            <li><strong>Content Delivery Optimization:</strong> Check how your website appears to visitors from different regions.</li>
-                        </ul>
-                    </div>
+                <div class="mt-8">
+                    <a href="/ip-lookup" class="btn-secondary inline-flex items-center px-6 py-3 rounded-xl">
+                        Check my IP now
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- IP Lookup Information Section -->
-    <section class="about-ip-locator py-5" style="background-color: #f8fafc;">
-        <div class="container">
-            <h2 class="text-center mb-5" style="color: #1B4A6B; font-weight: 700;">About Our IP Address Lookup Tool</h2>
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm" style="border-radius: 15px; border: none;">
-                        <div class="card-body">
-                            <h3 class="card-title mb-4" style="color: #2A9FD6;">Instant IP Lookup Service</h3>
-                            <p class="card-text">Our IP lookup tool provides comprehensive information about any IP address in seconds. Whether you're checking a website's hosting location or investigating a suspicious connection, our tool gives you detailed insights instantly.</p>
-                            <p class="card-text">With support for both IPv4 and IPv6 addresses, our IP lookup service can handle any address format. Just enter the IP address in our search box, and we'll show you everything from its geographic location to network details.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm" style="border-radius: 15px; border: none;">
-                        <div class="card-body">
-                            <h3 class="card-title mb-4" style="color: #2A9FD6;">Accurate IP Geolocation</h3>
-                            <p class="card-text">Our IP address lookup tool uses multiple data sources to provide the most accurate location information possible. We can pinpoint IP addresses to their city, region, and country with high precision, helping you understand exactly where an IP is located.</p>
-                            <p class="card-text">We visualize the IP location on an interactive map, giving you a clear picture of the geographic position. This makes it easy to see exactly where servers, websites, or connections are physically located around the world.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm" style="border-radius: 15px; border: none;">
-                        <div class="card-body">
-                            <h3 class="card-title mb-4" style="color: #2A9FD6;">Comprehensive Network Data</h3>
-                            <p class="card-text">Beyond just location, our IP lookup tool reveals detailed network information including the Internet Service Provider (ISP), organization, ASN, and more. This helps you understand who owns and operates the network behind any IP address.</p>
-                            <p class="card-text">For security professionals, we also provide information about whether an IP is associated with a VPN, proxy, or hosting service. This can be crucial for identifying potential security risks or understanding how a connection is being routed.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm" style="border-radius: 15px; border: none;">
-                        <div class="card-body">
-                            <h3 class="card-title mb-4" style="color: #2A9FD6;">Privacy & Security</h3>
-                            <p class="card-text">Our IP address lookup service is completely free and requires no registration. We don't store the IP addresses you search for, and all lookups are performed securely and anonymously.</p>
-                            <p class="card-text">Whether you're a network administrator, security professional, or just curious about an IP address, our tool provides the information you need while respecting privacy and security concerns.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-12 text-center">
-                    <div class="ip-lookup-cta p-4 rounded" style="background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white;">
-                        <h3 class="mb-3">Look Up Any IP Address Now</h3>
-                        <p class="mb-4">Enter an IP address in the search box above to get detailed information instantly.</p>
-                        <a href="#" onclick="focusSearch(); return false;" class="btn btn-light btn-lg px-4 py-2">Start IP Lookup <i class="fas fa-chevron-right ms-2"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section class="faq-section py-5" id="faq">
-        <div class="container">
-            <h2 class="text-center mb-4">Frequently Asked Questions About IP Lookup</h2>
-            <div class="accordion" id="faqAccordion">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                            What information can I get from an IP address lookup?
-                        </button>
-                    </h2>
-                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>Our IP address lookup tool provides comprehensive information including:</p>
-                            <ul>
-                                <li>Geographic location (country, region, city)</li>
-                                <li>GPS coordinates</li>
-                                <li>Internet Service Provider (ISP)</li>
-                                <li>Organization</li>
-                                <li>Autonomous System Number (ASN)</li>
-                                <li>Timezone</li>
-                                <li>VPN/proxy detection</li>
-                                <li>Connection type</li>
-                            </ul>
-                            <p>This information can be useful for network diagnostics, security research, verifying server locations, and many other purposes.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                            How accurate is your IP address lookup tool?
-                        </button>
-                    </h2>
-                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>Our IP lookup tool provides highly accurate results with:</p>
-                            <ul>
-                                <li>99.9% accuracy at the country level</li>
-                                <li>90-95% accuracy at the city level</li>
-                            </ul>
-                            <p>It's important to understand that IP geolocation has inherent limitations. IP addresses are assigned to networks, not physical locations. The accuracy can be affected by:</p>
-                            <ul>
-                                <li>ISP network infrastructure</li>
-                                <li>VPNs and proxies</li>
-                                <li>Mobile networks</li>
-                                <li>Corporate networks that route traffic through central locations</li>
-                            </ul>
-                            <p>We use multiple reliable data sources and frequent updates to provide the most accurate results possible within these limitations.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                            Is it legal to look up someone's IP address?
-                        </button>
-                    </h2>
-                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>Yes, it is generally legal to look up information about an IP address. IP addresses themselves are considered public routing information, similar to a mailing address for the internet.</p>
-                            <p>However, what you do with that information may be subject to various laws and regulations regarding:</p>
-                            <ul>
-                                <li>Privacy</li>
-                                <li>Cybersecurity</li>
-                                <li>Harassment</li>
-                                <li>Stalking</li>
-                            </ul>
-                            <p>Our IP lookup tool is designed for legitimate purposes such as network administration, security research, and troubleshooting. Always use IP information responsibly and in accordance with applicable laws.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                            Can I look up the owner of an IP address?
-                        </button>
-                    </h2>
-                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>Our IP lookup tool can show you the organization that owns the IP address, such as the Internet Service Provider (ISP) or hosting company. However, it cannot identify the specific individual using that IP address.</p>
-                            <p>IP addresses typically do not directly identify individuals for several reasons:</p>
-                            <ul>
-                                <li>Many IP addresses are shared among multiple users</li>
-                                <li>Dynamic IP addresses change regularly</li>
-                                <li>Organizations and businesses often use one public IP for many employees</li>
-                                <li>VPNs and proxies mask the user's actual IP address</li>
-                            </ul>
-                            <p>Identifying a specific individual from an IP address typically requires legal authorization and cooperation from the ISP, which generally only occurs during official law enforcement investigations.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                            Do you store the IP addresses I look up?
-                        </button>
-                    </h2>
-                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body">
-                            <p>No, we do not store the IP addresses you look up using our tool. We take privacy seriously and design our services with privacy in mind:</p>
-                            <ul>
-                                <li>Each lookup is processed independently</li>
-                                <li>We don't maintain a search history of your lookups</li>
-                                <li>No account or registration is required to use our tool</li>
-                                <li>We don't associate lookups with your own IP address</li>
-                            </ul>
-                            <p>This allows you to conduct IP lookups with confidence that your research remains private.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "IP Address Lookup Tool",
-        "url": "https://whatismyipaddress.world/ip-lookup",
-        "description": "Free IP lookup tool providing detailed information about any IPv4 or IPv6 address including precise geolocation, ISP, and network details.",
-        "applicationCategory": "Utility",
-        "operatingSystem": "All",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "featureList": "IP lookup, Geolocation mapping, ISP detection, Network analysis, VPN detection",
-        "screenshot": "https://whatismyipaddress.world/static/ip_app/img/og-image.png",
-        "softwareVersion": "1.0"
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-            {
-                "@type": "Question",
-                "name": "What information can I get from an IP address lookup?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Our IP address lookup tool provides comprehensive information including geographic location (country, region, city), GPS coordinates, Internet Service Provider (ISP), organization, Autonomous System Number (ASN), timezone, VPN/proxy detection, and connection type."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "How accurate is your IP address lookup tool?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Our IP lookup tool provides highly accurate results with 99.9% accuracy at the country level and 90-95% accuracy at the city level. We use multiple reliable data sources and frequent updates to provide the most accurate results possible."
-                }
-            },
-            {
-                "@type": "Question",
-                "name": "Is it legal to look up someone's IP address?",
-                "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": "Yes, it is generally legal to look up information about an IP address. IP addresses themselves are considered public routing information, similar to a mailing address for the internet. However, what you do with that information may be subject to various laws and regulations."
-                }
-            }
-        ]
-    }
-    </script>
-
-    {% block extra_js %}
-    <script>
-        // Function to focus on the search input
-        function focusSearch() {
-            document.getElementById('ip-search').focus();
             
-            // Scroll to the search box
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+            <!-- Right Image/Visual -->
+            <div class="w-full md:w-1/2">
+                <div class="relative rounded-2xl overflow-hidden shadow-xl">
+                    <div class="aspect-w-4 aspect-h-3">
+                        <!-- IP Monitor Dashboard Mockup -->
+                        <div class="bg-white p-6 h-full">
+                            <!-- Header -->
+                            <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+                                <div class="flex items-center">
+                                    <div class="text-primary-700 mr-3">
+                                        <i class="fas fa-shield-alt text-3xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-xl text-gray-800">WhatIsMyIPAddress.World</h3>
+                                        <p class="text-sm text-gray-500">IP Security Monitor</p>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- IP Info Display -->
+                            <div class="bg-gray-50 rounded-xl p-5 border border-gray-100 mb-6">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="font-semibold text-gray-800">Your IP Address:</div>
+                                    <div class="font-mono bg-white px-3 py-1 rounded border border-gray-200 text-secondary">192.168.1.1</div>
+                                </div>
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="font-semibold text-gray-800">Location:</div>
+                                    <div class="font-medium text-gray-700">New York, United States</div>
+                                </div>
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="font-semibold text-gray-800">ISP:</div>
+                                    <div class="font-medium text-gray-700">Verizon Communications</div>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="font-semibold text-gray-800">Security Status:</div>
+                                    <div class="flex items-center">
+                                        <span class="inline-block h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                                        <span class="font-medium text-gray-700">Secure</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Security Recommendations -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold text-gray-800 mb-3">IP Security Recommendations</h4>
+                                <div class="space-y-2">
+                                    <div class="flex items-center text-sm">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-gray-600">VPN Connection Active - IP is masked</span>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        <span class="text-gray-600">IP has not changed since last check</span>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <i class="fas fa-exclamation-circle text-yellow-500 mr-2"></i>
+                                        <span class="text-gray-600">WebRTC leak protection recommended</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Monitoring History Graph (Simplified) -->
+                            <div class="bg-white rounded-lg border border-gray-100 p-3">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div class="font-semibold text-sm text-gray-700">IP Check History</div>
+                                    <div class="text-xs text-gray-500">Last 7 days</div>
+                                </div>
+                                <div class="h-16 flex items-end justify-between px-2">
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 30%"></div>
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 60%"></div>
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 40%"></div>
+                                    <div class="w-3 bg-secondary rounded-t" style="height: 80%"></div>
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 50%"></div>
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 70%"></div>
+                                    <div class="w-3 bg-primary-600 rounded-t" style="height: 45%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                    <div>Mon</div>
+                                    <div>Tue</div>
+                                    <div>Wed</div>
+                                    <div>Thu</div>
+                                    <div>Fri</div>
+                                    <div>Sat</div>
+                                    <div>Sun</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Decorative Elements -->
+                    <div class="absolute top-3 right-3 bg-primary-700 rounded-full w-12 h-12 flex items-center justify-center text-white shadow-lg transform rotate-12">
+                        <i class="fas fa-lock text-lg"></i>
+                    </div>
+                    <div class="absolute bottom-3 left-3 bg-secondary rounded-full w-10 h-10 flex items-center justify-center text-white shadow-lg">
+                        <i class="fas fa-wifi text-sm"></i>
+                    </div>
+                </div>
+                
+                <!-- Caption -->
+                <div class="text-center mt-3 text-sm text-gray-500 italic">
+                    Monitor your IP security status with <strong>WhatIsMyIPAddress.World</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Quick IP Security Tips Section -->
+<section class="py-16 sm:py-20 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto max-w-6xl px-4">
+        <div class="flex flex-col lg:flex-row gap-12">
+            <div class="w-full lg:w-1/3">
+                <div class="sticky top-24">
+                    <h2 class="text-3xl sm:text-4xl font-bold mb-6">Essential IP Security Tips</h2>
+                    <p class="text-gray-600 mb-6">Protect <strong>what is my IP address</strong> with these actionable security tips from the experts at WhatIsMyIPAddress.World.</p>
+                    
+                    <div class="hidden lg:block">
+                        <a href="/ip-lookup" class="btn-secondary py-3 px-6 rounded-xl inline-flex items-center">
+                            Check my IP now
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full lg:w-2/3">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Tip 1 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-sync-alt text-purple-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Change Default Router Password</h3>
+                        <p class="text-gray-600">Many routers come with weak default passwords. Change yours to prevent unauthorized access to <strong>my IP address</strong> and network settings.</p>
+                    </div>
+                    
+                    <!-- Tip 2 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-shield-alt text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Enable Firewall Protection</h3>
+                        <p class="text-gray-600">Your operating system's firewall helps block unauthorized connections to your device that could expose <strong>what is my IP</strong> to attackers.</p>
+                    </div>
+                    
+                    <!-- Tip 3 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-check-double text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Verify HTTPS Connections</h3>
+                        <p class="text-gray-600">Only share <strong>my IP address</strong> with secure websites that use HTTPS encryption, indicated by a padlock icon in your browser.</p>
+                    </div>
+                    
+                    <!-- Tip 4 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-wifi text-red-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Avoid Public WiFi Without VPN</h3>
+                        <p class="text-gray-600">Public networks can expose <strong>whatismyipaddress</strong> information. Always use a VPN when connecting to hotspots in cafes, airports, etc.</p>
+                    </div>
+                    
+                    <!-- Tip 5 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-browser text-amber-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Use Incognito Mode</h3>
+                        <p class="text-gray-600">While not hiding <strong>my IP address</strong> completely, incognito mode prevents local browser history and reduces some tracking methods.</p>
+                    </div>
+                    
+                    <!-- Tip 6 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-search text-teal-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Regular IP Checkups</h3>
+                        <p class="text-gray-600">Visit WhatIsMyIPAddress.World regularly to <strong>check my IP</strong> and confirm your security measures are working as expected.</p>
+                    </div>
+                    
+                    <!-- Tip 7 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-window-close text-indigo-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Disable WebRTC in Browsers</h3>
+                        <p class="text-gray-600">Even with a VPN, WebRTC can reveal <strong>locate my IP</strong> information. Use browser extensions or settings to disable this feature.</p>
+                    </div>
+                    
+                    <!-- Tip 8 -->
+                    <div class="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all border border-gray-100">
+                        <div class="w-12 h-12 rounded-full bg-pink-100 flex items-center justify-center mb-4">
+                            <i class="fas fa-user-secret text-pink-600"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Consider Multi-Layer Protection</h3>
+                        <p class="text-gray-600">For maximum security, combine VPN, secure browsers, and regular <strong>what is my IP</strong> checks at WhatIsMyIPAddress.World.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center lg:hidden">
+                    <a href="/ip-lookup" class="btn-secondary py-3 px-6 rounded-xl inline-flex items-center">
+                        Check my IP now
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Enhanced Final CTA Section -->
+<section class="py-16 sm:py-20 bg-gradient-to-r from-primary-800 to-primary-900 text-white relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0 overflow-hidden opacity-10">
+        <div class="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-white/20 blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-secondary/30 blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-32 w-96 h-96 rounded-full bg-white/20 blur-3xl"></div>
+    </div>
+    
+    <!-- Network Lines Animation (simplified with CSS) -->
+    <div class="absolute inset-0 bg-cover bg-center opacity-5" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMC41Ij48cGF0aCBkPSJNMCAwIEwxMDAgMTAwIE0xMDAgMCBMMCAxMDAgTTAgNTAgTDEwMCA1MCBNNTAgMCBMNTAgMTAwIi8+PC9nPjwvc3ZnPg==')"></div>
+    
+    <div class="container mx-auto max-w-4xl px-4 text-center relative z-10">
+        <div class="inline-flex items-center bg-white/10 rounded-full px-4 py-1.5 text-sm font-medium mb-6 backdrop-blur-sm">
+            <i class="fas fa-shield-alt mr-2"></i>
+            PROTECT YOUR DIGITAL IDENTITY
+        </div>
+        
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Start Securing Your IP Address Today</h2>
+        
+        <p class="text-xl text-white/90 mb-8 max-w-3xl mx-auto">Join millions of users who trust WhatIsMyIPAddress.World to answer "what is my IP address" and protect their online privacy.</p>
+        
+        <div class="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mb-12">
+            <a href="/ip-lookup" class="btn-secondary py-4 px-8 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center">
+                <i class="fas fa-search mr-2"></i>
+                Look Up Any IP
+            </a>
+            <a href="/" class="bg-white text-primary-700 font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg flex items-center justify-center">
+                <i class="fas fa-user-shield mr-2"></i>
+                Check My IP
+            </a>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="flex flex-wrap justify-center gap-6 sm:gap-10">
+            <div class="flex flex-col items-center">
+                <div class="text-white mb-2">
+                    <i class="fas fa-users text-3xl"></i>
+                </div>
+                <div class="font-bold text-2xl">15M+</div>
+                <div class="text-sm text-white/70">Monthly users</div>
+            </div>
+            
+            <div class="flex flex-col items-center">
+                <div class="text-white mb-2">
+                    <i class="fas fa-globe text-3xl"></i>
+                </div>
+                <div class="font-bold text-2xl">200+</div>
+                <div class="text-sm text-white/70">Countries served</div>
+            </div>
+            
+            <div class="flex flex-col items-center">
+                <div class="text-white mb-2">
+                    <i class="fas fa-check-circle text-3xl"></i>
+                </div>
+                <div class="font-bold text-2xl">99.9%</div>
+                <div class="text-sm text-white/70">Uptime reliability</div>
+            </div>
+            
+            <div class="flex flex-col items-center">
+                <div class="text-white mb-2">
+                    <i class="fas fa-shield-alt text-3xl"></i>
+                </div>
+                <div class="font-bold text-2xl">100%</div>
+                <div class="text-sm text-white/70">Privacy guaranteed</div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- FAQ Section -->
+<section id="faq" class="py-12 sm:py-16 bg-white">
+    <div class="container mx-auto max-w-4xl px-4">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+            <p class="text-gray-600">Get answers to common questions about IP lookups and how to use our tool.</p>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <button class="faq-btn flex justify-between items-center w-full p-4 text-left bg-white hover:bg-gray-50 transition duration-200" aria-expanded="false">
+                    <span class="font-semibold">What information can I find with an IP lookup?</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="faq-content bg-gray-50 p-4 border-t border-gray-200 hidden">
+                    <p class="mb-3">With our IP lookup tool, you can find comprehensive information about any IP address, including:</p>
+                    <ul class="list-disc ml-5 mb-3 space-y-1">
+                        <li>Geographic location (country, region, city, postal code)</li>
+                        <li>ISP and organization information</li>
+                        <li>Network details (AS number, connection type)</li>
+                        <li>Timezone information</li>
+                        <li>Visual map of the IP location</li>
+                        <li>Security status (whether it's a known VPN/proxy)</li>
+                    </ul>
+                    <p>This information can be useful for security analysis, troubleshooting, or just curiosity about where a connection is coming from.</p>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <button class="faq-btn flex justify-between items-center w-full p-4 text-left bg-white hover:bg-gray-50 transition duration-200">
+                    <span class="font-semibold">How accurate is the IP location data?</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="faq-content bg-gray-50 p-4 border-t border-gray-200 hidden">
+                    <p class="mb-3">IP geolocation accuracy varies depending on several factors:</p>
+                    <ul class="list-disc ml-5 mb-3 space-y-1">
+                        <li><strong>Country level:</strong> 99.9% accurate</li>
+                        <li><strong>Region/state level:</strong> 90-95% accurate</li>
+                        <li><strong>City level:</strong> 80-90% accurate</li>
+                        <li><strong>Postal code:</strong> 70-80% accurate</li>
+                    </ul>
+                    <p class="mb-3">Our tool uses multiple reliable data sources to provide the most accurate results possible. However, it's important to understand that IP geolocation is an approximation based on network routing information, not GPS coordinates.</p>
+                    <p>The accuracy can be affected by factors like VPNs, proxies, mobile networks, and how ISPs allocate their IP blocks.</p>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <button class="faq-btn flex justify-between items-center w-full p-4 text-left bg-white hover:bg-gray-50 transition duration-200">
+                    <span class="font-semibold">Can I look up both IPv4 and IPv6 addresses?</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="faq-content bg-gray-50 p-4 border-t border-gray-200 hidden">
+                    <p class="mb-3">Yes, our IP lookup tool fully supports both IPv4 and IPv6 address formats. Simply enter any valid IP address into the search box and our tool will automatically detect the format and provide the appropriate information.</p>
+                    <p>For IPv4 addresses (like 192.168.1.1) and IPv6 addresses (like 2001:0db8:85a3:0000:0000:8a2e:0370:7334), we provide the same comprehensive data including location, network details, ISP, and security details.</p>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <button class="faq-btn flex justify-between items-center w-full p-4 text-left bg-white hover:bg-gray-50 transition duration-200">
+                    <span class="font-semibold">Is it legal to look up someone's IP address?</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="faq-content bg-gray-50 p-4 border-t border-gray-200 hidden">
+                    <p class="mb-3">Yes, it is generally legal to look up publicly available information about an IP address. IP addresses themselves are considered public routing information, similar to a mailing address for internet traffic.</p>
+                    <p class="mb-3">However, how you use that information may be subject to various laws and regulations depending on your jurisdiction. For example:</p>
+                    <ul class="list-disc ml-5 mb-3 space-y-1">
+                        <li>Using IP information for harassment, stalking, or malicious purposes is illegal</li>
+                        <li>Some jurisdictions consider IP addresses to be personal data under privacy laws</li>
+                        <li>Commercial use of IP data may require compliance with additional regulations</li>
+                    </ul>
+                    <p>Our tool is intended for legitimate purposes such as network security, troubleshooting, and analytics.</p>
+                </div>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg overflow-hidden">
+                <button class="faq-btn flex justify-between items-center w-full p-4 text-left bg-white hover:bg-gray-50 transition duration-200">
+                    <span class="font-semibold">Can I detect if an IP is using a VPN or proxy?</span>
+                    <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                </button>
+                <div class="faq-content bg-gray-50 p-4 border-t border-gray-200 hidden">
+                    <p class="mb-3">Yes, our IP lookup tool includes VPN and proxy detection capabilities. When you search for an IP address, we check it against our database of known VPN servers, proxy services, and other anonymizing network infrastructure.</p>
+                    <p class="mb-3">The security status indicator will show if the IP address is:</p>
+                    <ul class="list-disc ml-5 mb-3 space-y-1">
+                        <li><strong>Standard Connection:</strong> A regular residential or business ISP connection</li>
+                        <li><strong>VPN:</strong> A Virtual Private Network server</li>
+                        <li><strong>Proxy:</strong> A proxy server that may be hiding the user's true location</li>
+                        <li><strong>Tor Exit Node:</strong> Part of the Tor anonymity network</li>
+                        <li><strong>Hosting/Data Center:</strong> An IP from a hosting provider rather than an ISP</li>
+                    </ul>
+                    <p>This information can be valuable for security analysis, fraud prevention, and understanding the true nature of network connections.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section - Compact Layout -->
+<section class="py-6 sm:py-10 bg-gradient-to-r from-primary-700 to-primary-800 text-white">
+    <div class="container mx-auto max-w-4xl px-1 text-center">
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">Start Your IP Address Lookup Now</h2>
+        <p class="text-xl text-white/90 mb-4 max-w-2xl mx-auto">Get comprehensive IP information and geolocation data with our free, powerful lookup tool.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-3">
+            <a href="#" onclick="focusSearchInput(); return false;" class="btn-secondary text-center py-2 px-4 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all">Look Up Any IP</a>
+            <a href="/" class="bg-white text-primary-700 font-semibold py-2 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all text-lg">Check My IP</a>
+        </div>
+    </div>
+</section>
+
+<!-- SEO Structured Data -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "IP Address Lookup Tool - WhatIsMyIPAddress.World",
+    "url": "https://whatismyipaddress.world/ip-lookup",
+    "description": "Free IP address lookup tool providing detailed information about any IP address including precise geolocation, ISP, and network details.",
+    "applicationCategory": "Utility",
+    "operatingSystem": "All",
+    "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+    },
+    "featureList": "IP lookup, Geolocation mapping, VPN detection, Network analysis, IP information",
+    "screenshot": "https://whatismyipaddress.world/static/ip_app/img/og-image.png",
+    "softwareVersion": "1.0",
+    "author": {
+        "@type": "Organization",
+        "name": "WhatIsMyIPAddress.World",
+        "url": "https://whatismyipaddress.world/"
+    },
+    "contentRating": "General",
+    "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "1245"
+    }
+}
+</script>
+
+<!-- FAQ Schema -->
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+        {
+            "@type": "Question",
+            "name": "What information can I find with an IP lookup?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "With our IP lookup tool, you can find comprehensive information about any IP address, including geographic location (country, region, city, postal code), ISP and organization information, network details (AS number, connection type), timezone information, visual map of the IP location, and security status (whether it's a known VPN/proxy). This information can be useful for security analysis, troubleshooting, or just curiosity about where a connection is coming from."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "How accurate is the IP location data?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "IP geolocation accuracy varies depending on several factors: Country level: 99.9% accurate, Region/state level: 90-95% accurate, City level: 80-90% accurate, Postal code: 70-80% accurate. Our tool uses multiple reliable data sources to provide the most accurate results possible. However, it's important to understand that IP geolocation is an approximation based on network routing information, not GPS coordinates. The accuracy can be affected by factors like VPNs, proxies, mobile networks, and how ISPs allocate their IP blocks."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I look up both IPv4 and IPv6 addresses?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, our IP lookup tool fully supports both IPv4 and IPv6 address formats. Simply enter any valid IP address into the search box and our tool will automatically detect the format and provide the appropriate information. For IPv4 addresses (like 192.168.1.1) and IPv6 addresses (like 2001:0db8:85a3:0000:0000:8a2e:0370:7334), we provide the same comprehensive data including location, network details, ISP, and security details."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Is it legal to look up someone's IP address?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, it is generally legal to look up publicly available information about an IP address. IP addresses themselves are considered public routing information, similar to a mailing address for internet traffic. However, how you use that information may be subject to various laws and regulations depending on your jurisdiction. For example: Using IP information for harassment, stalking, or malicious purposes is illegal; Some jurisdictions consider IP addresses to be personal data under privacy laws; Commercial use of IP data may require compliance with additional regulations. Our tool is intended for legitimate purposes such as network security, troubleshooting, and analytics."
+            }
+        },
+        {
+            "@type": "Question",
+            "name": "Can I detect if an IP is using a VPN or proxy?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, our IP lookup tool includes VPN and proxy detection capabilities. When you search for an IP address, we check it against our database of known VPN servers, proxy services, and other anonymizing network infrastructure. The security status indicator will show if the IP address is: Standard Connection (A regular residential or business ISP connection), VPN (A Virtual Private Network server), Proxy (A proxy server that may be hiding the user's true location), Tor Exit Node (Part of the Tor anonymity network), or Hosting/Data Center (An IP from a hosting provider rather than an ISP). This information can be valuable for security analysis, fraud prevention, and understanding the true nature of network connections."
+            }
+        }
+    ]
+}
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+   // Wait for DOM to be fully loaded before initializing
+// This code completely replaces all JavaScript in the extra_js block
+// It uses direct navigation and avoids relying on form submission
+
+// Add immediately-invoked function to setup everything once DOM is loaded
+(function() {
+    // Wait for DOM to fully load
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM fully loaded, initializing IP lookup tool...');
+        
+        // Create error notification element
+        createErrorNotification();
+        
+        // Create enhance spinner styles
+        enhanceSpinnerStyles();
+        
+        // Setup form and button event listeners
+        setupEventListeners();
+        
+        // Initialize maps if coordinates are available
+        initializeMaps();
+        
+        // Initialize accordions
+        initFaqAccordions();
+    });
+    
+    // Function to create error notification element
+    function createErrorNotification() {
+        if (!document.getElementById('error-notification')) {
+            const errorNotification = document.createElement('div');
+            errorNotification.id = 'error-notification';
+            errorNotification.style.position = 'fixed';
+            errorNotification.style.top = '20px';
+            errorNotification.style.left = '50%';
+            errorNotification.style.transform = 'translateX(-50%)';
+            errorNotification.style.backgroundColor = '#f44336';
+            errorNotification.style.color = 'white';
+            errorNotification.style.padding = '15px 25px';
+            errorNotification.style.borderRadius = '4px';
+            errorNotification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+            errorNotification.style.zIndex = '99999';
+            errorNotification.style.fontWeight = 'bold';
+            errorNotification.style.display = 'none';
+            document.body.appendChild(errorNotification);
+            console.log('Error notification element created');
+        }
+    }
+    
+    // Function to show error notification
+    window.showError = function(message) {
+        const errorNotification = document.getElementById('error-notification');
+        if (errorNotification) {
+            errorNotification.textContent = message;
+            errorNotification.style.display = 'block';
+            
+            // Hide after 4 seconds
+            setTimeout(function() {
+                errorNotification.style.display = 'none';
+            }, 4000);
+        } else {
+            // Fallback to alert if element not found
+            alert(message);
+        }
+        console.error('Error:', message);
+    };
+    
+    // Function to enhance spinner styles
+    function enhanceSpinnerStyles() {
+        const style = document.createElement('style');
+        style.textContent = `
+            /* Enhanced spinner overlay */
+            #spinner-overlay {
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                background-color: rgba(0,0,0,0.7) !important;
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+                z-index: 99999 !important;
+            }
+            
+            #spinner-overlay.hide {
+                display: none !important;
+            }
+            
+            .spinner {
+                width: 80px !important;
+                height: 80px !important;
+                border-radius: 50% !important;
+                border: 8px solid transparent !important;
+                border-top-color: #4A90E2 !important;
+                border-bottom-color: #4A90E2 !important;
+                animation: spin 1s linear infinite !important;
+            }
+            
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            /* Map marker styles */
+            .custom-map-marker {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            
+            .marker-pin {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background-color: #4A90E2;
+                border: 3px solid white;
+                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.4);
+                animation: marker-pulse 1.5s infinite;
+            }
+            
+            @keyframes marker-pulse {
+                0% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7); }
+                70% { box-shadow: 0 0 0 10px rgba(74, 144, 226, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(74, 144, 226, 0); }
+            }
+            
+            /* FAQ styles */
+            .faq-content {
+                transition: max-height 0.3s ease-out;
+                overflow: hidden;
+                max-height: 0;
+            }
+            
+            .faq-btn i {
+                transition: transform 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+        console.log('Enhanced styles added');
+    }
+    
+    // Function to set up event listeners
+    function setupEventListeners() {
+        // Get the form and button elements
+        const form = document.getElementById('ip-lookup-form');
+        const button = document.getElementById('lookup-button');
+        const input = document.getElementById('ip-search');
+        
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                handleIpLookup();
             });
+            console.log('Form submit event listener added');
+        } else {
+            console.warn('IP lookup form not found');
         }
         
-        // Custom JavaScript for IP lookup page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize maps with default location
-            initMap(40.7128, -74.0060, false); // Default to NYC
-            initMap(40.7128, -74.0060, true);
+        if (button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                handleIpLookup();
+            });
+            console.log('Button click event listener added');
+        } else {
+            console.warn('Lookup button not found');
+        }
+        
+        // Also handle Enter key on input field
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleIpLookup();
+                }
+            });
+            console.log('Input keydown event listener added');
+        }
+    }
+    
+    // Function to handle IP lookup
+    function handleIpLookup() {
+        const input = document.getElementById('ip-search');
+        if (!input) {
+            showError('Could not find the IP input field');
+            return;
+        }
+        
+        const ipValue = input.value.trim();
+        if (!ipValue) {
+            showError('Please enter an IP address to look up');
+            return;
+        }
+        
+        // IP validation regex (simple version)
+        const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+        const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+        
+        // Skip validation for now to avoid blocking potentially valid IPs
+        // if (!ipv4Regex.test(ipValue) && !ipv6Regex.test(ipValue)) {
+        //     showError('Please enter a valid IP address');
+        //     return;
+        // }
+        
+        // Show spinner before redirect
+        const spinner = document.getElementById('spinner-overlay');
+        if (spinner) {
+            // First make sure it's visible by setting display explicitly
+            spinner.style.display = 'flex';
+            spinner.classList.remove('hide');
             
-            // Check if there's an IP parameter in URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const ipParam = urlParams.get('ip');
+            // Remove any 'hidden' classes that might be applied
+            spinner.classList.remove('hidden');
             
-            if (ipParam) {
-                // Set the input value
-                document.getElementById('ip-search').value = ipParam;
-                // Trigger the search
-                searchIP();
-            }
+            // Add show class if it uses that
+            spinner.classList.add('show');
+            
+            console.log('Spinner displayed');
+        }
+        
+        // Show map placeholders
+        const mapPlaceholder = document.getElementById('map-placeholder');
+        const mapMobilePlaceholder = document.getElementById('map-mobile-placeholder');
+        
+        if (mapPlaceholder) {
+            mapPlaceholder.classList.remove('hidden');
+        }
+        
+        if (mapMobilePlaceholder) {
+            mapMobilePlaceholder.classList.remove('hidden');
+        }
+        
+        // Use current URL path to build the redirect URL
+        const currentPath = window.location.pathname;
+        const newUrl = currentPath + '?ip=' + encodeURIComponent(ipValue);
+        
+        console.log('Redirecting to:', newUrl);
+        
+        // Redirect the page - this is the most reliable way
+        window.location.href = newUrl;
+    }
+    
+    // Initialize FAQ accordions
+    function initFaqAccordions() {
+        const faqButtons = document.querySelectorAll('.faq-btn');
+        
+        faqButtons.forEach(button => {
+            // Remove existing listeners by cloning
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+            
+            // Add new listener
+            newButton.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                if (icon) {
+                    icon.classList.toggle('transform');
+                    icon.classList.toggle('rotate-180');
+                }
+                
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    this.setAttribute('aria-expanded', 'true');
+                } else {
+                    content.classList.add('hidden');
+                    content.style.maxHeight = '0';
+                    this.setAttribute('aria-expanded', 'false');
+                }
+            });
         });
         
-        // Override the searchIP function to update UI for lookup page
+        // Open first FAQ item
+        if (faqButtons.length > 0) {
+            setTimeout(() => {
+                faqButtons[0].click();
+            }, 500);
+        }
+    }
+    
+    // Initialize maps
+    function initializeMaps() {
+        // Check if Leaflet is available
+        if (typeof L === 'undefined') {
+            console.warn('Leaflet library not loaded, attempting to load it');
+            loadLeaflet();
+            return;
+        }
         
-        // Function to update UI for IP lookup results
-        function updateIPLookupUI(data) {
-            // Update IP info
-            document.getElementById('ip-address').textContent = data.query;
-            document.getElementById('ip-type').textContent = determineIPType(data.query);
+        // Get coordinates
+        let lat = 0;
+        let lon = 0;
+        
+        // Try to get from coordinates element
+        const coordsElement = document.getElementById('location-coordinates');
+        if (coordsElement && coordsElement.textContent) {
+            const coordsText = coordsElement.textContent.trim();
+            const coordsArray = coordsText.split(',');
+            if (coordsArray.length === 2) {
+                lat = parseFloat(coordsArray[0].trim());
+                lon = parseFloat(coordsArray[1].trim());
+            }
+        }
+        
+        // Check if coordinates are valid
+        const hasValidCoordinates = (lat !== 0 || lon !== 0) && !isNaN(lat) && !isNaN(lon);
+        
+        try {
+            // Initialize both maps
+            initializeMap('map', lat, lon, hasValidCoordinates);
+            initializeMap('map-mobile', lat, lon, hasValidCoordinates);
             
-            // Update basic info
-            if (document.getElementById('isp')) {
-                document.getElementById('isp').textContent = data.isp || 'Unknown';
-            }
-            if (document.getElementById('city')) {
-                document.getElementById('city').textContent = data.city || 'Unknown';
-            }
-            if (document.getElementById('region')) {
-                document.getElementById('region').textContent = data.regionName || 'Unknown';
-            }
-            if (document.getElementById('country')) {
-                document.getElementById('country').textContent = data.country || 'Unknown';
-            }
-            if (document.getElementById('postal')) {
-                document.getElementById('postal').textContent = data.zip || 'Unknown';
-            }
-            if (document.getElementById('org')) {
-                document.getElementById('org').textContent = data.org || data.as || 'Unknown';
-            }
-            if (document.getElementById('timezone')) {
-                document.getElementById('timezone').textContent = data.timezone || 'Unknown';
-            }
-            
-            // Update VPN status
-            if (document.getElementById('vpn-status')) {
-                const vpnInfo = detectVPNorProxy(data);
-                if (vpnInfo.detected) {
-                    document.getElementById('vpn-status').innerHTML = 
-                        `<span class="text-warning"><i class="fas fa-shield-alt me-1"></i> ${vpnInfo.type} Detected</span>`;
-                } else {
-                    document.getElementById('vpn-status').innerHTML = 
-                        `<span class="text-success"><i class="fas fa-check-circle me-1"></i> Not Detected</span>`;
-                }
-            }
-            
-            // Update maps if coordinates are available
-            if (data.lat && data.lon) {
-                initMap(parseFloat(data.lat), parseFloat(data.lon), false); // Desktop map
-                initMap(parseFloat(data.lat), parseFloat(data.lon), true);  // Mobile map
+            // Hide placeholders if coords are valid
+            if (hasValidCoordinates) {
+                const mapPlaceholder = document.getElementById('map-placeholder');
+                const mapMobilePlaceholder = document.getElementById('map-mobile-placeholder');
                 
-                // Update location text
-                const locationText = `${data.city || 'Unknown'}, ${data.regionName || 'Unknown'}, ${data.country || 'Unknown'}`;
-                if (document.getElementById('location')) {
-                    document.getElementById('location').textContent = locationText;
+                if (mapPlaceholder) {
+                    mapPlaceholder.classList.add('hidden');
                 }
-                if (document.getElementById('location-mobile')) {
-                    document.getElementById('location-mobile').textContent = locationText;
-                }
-            } else {
-                // If no coordinates, show default map with message
-                initMap(40.7128, -74.0060, false); // Default to NYC
-                initMap(40.7128, -74.0060, true);
                 
-                const locationMsg = "Location coordinates not available for this IP";
-                if (document.getElementById('location')) {
-                    document.getElementById('location').textContent = locationMsg;
-                }
-                if (document.getElementById('location-mobile')) {
-                    document.getElementById('location-mobile').textContent = locationMsg;
+                if (mapMobilePlaceholder) {
+                    mapMobilePlaceholder.classList.add('hidden');
                 }
             }
             
-            // Animate elements with a staggered delay for visual effect
-            animateElements();
+            // Hide spinner if it was showing
+            hideSpinner();
+        } catch (error) {
+            console.error('Error initializing maps:', error);
+            showError('There was an error loading the maps. Please try again.');
+            hideSpinner();
         }
+    }
+    
+    // Load Leaflet dynamically
+    function loadLeaflet() {
+        // Create and add Leaflet CSS
+        const leafletCSS = document.createElement('link');
+        leafletCSS.rel = 'stylesheet';
+        leafletCSS.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        document.head.appendChild(leafletCSS);
         
-        // Function to reset the lookup UI
-        function resetLookupUI() {
-            document.getElementById('lookup-instruction').style.display = 'block';
-            document.getElementById('lookup-results').style.display = 'none';
-            
-            // Reset maps to default
-            initMap(40.7128, -74.0060, false);
-            initMap(40.7128, -74.0060, true);
-            
-            // Reset location text
-            if (document.getElementById('location')) {
-                document.getElementById('location').textContent = "Enter an IP address to see its location";
-            }
-            if (document.getElementById('location-mobile')) {
-                document.getElementById('location-mobile').textContent = "Enter an IP address to see its location";
-            }
-        }
+        // Create and add Leaflet script
+        const leafletScript = document.createElement('script');
+        leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
         
-        // Helper function to determine IP type
-        function determineIPType(ip) {
-            // Check for IPv4 format: xxx.xxx.xxx.xxx
-            if (/^(\d{1,3}\.){3}\d{1,3}$/.test(ip)) {
-                return "IPv4";
-            }
-            
-            // Check for IPv6 format
-            if (ip.includes(':')) {
-                return "IPv6";
-            }
-            
-            return "Unknown";
-        }
+        leafletScript.onload = function() {
+            console.log('Leaflet loaded successfully');
+            // Initialize maps after loading
+            setTimeout(initializeMaps, 100);
+        };
         
-        // Helper function to detect VPN or Proxy
-        function detectVPNorProxy(data) {
-            // Check common VPN/Proxy indicators
-            if (data.proxy || data.hosting || data.tor || data.mobile) {
-                return {
-                    detected: true,
-                    type: data.proxy ? 'Proxy' : 
-                          data.tor ? 'Tor Network' : 
-                          data.hosting ? 'Hosting/VPN' : 'Mobile Network'
-                };
-            }
-            
-            // Check ISP names for common VPN providers
-            const vpnKeywords = ['vpn', 'virtual', 'proxy', 'hosting', 'cloud', 'server', 'anonymous'];
-            if (data.isp && vpnKeywords.some(keyword => data.isp.toLowerCase().includes(keyword))) {
-                return {
-                    detected: true,
-                    type: 'Possible VPN'
-                };
-            }
-            
-            return {
-                detected: false,
-                type: 'Not Detected'
-            };
-        }
+        leafletScript.onerror = function() {
+            console.error('Failed to load Leaflet');
+            showError('Failed to load map library. Please check your internet connection.');
+        };
         
-        // Animate elements when data is loaded
-        function animateElements() {
-            const detailRows = document.querySelectorAll('.detail-row');
-            
-            detailRows.forEach((row, index) => {
-                row.style.opacity = '0';
-                row.style.transform = 'translateY(20px)';
-                
-                setTimeout(() => {
-                    row.style.transition = 'all 0.3s ease';
-                    row.style.opacity = '1';
-                    row.style.transform = 'translateY(0)';
-                }, 100 * index);
+        document.head.appendChild(leafletScript);
+    }
+    
+    // Function to initialize a single map
+    function initializeMap(elementId, lat, lon, hasValidCoordinates) {
+        const mapElement = document.getElementById(elementId);
+        if (!mapElement) return;
+        
+        // Default US coordinates
+        const defaultLat = 37.0902;
+        const defaultLon = -95.7129;
+        
+        // Use valid coords or defaults
+        const mapLat = hasValidCoordinates ? lat : defaultLat;
+        const mapLon = hasValidCoordinates ? lon : defaultLon;
+        const zoomLevel = hasValidCoordinates ? 10 : 3;
+        
+        try {
+            // Initialize map
+            const map = L.map(elementId, {
+                center: [mapLat, mapLon],
+                zoom: zoomLevel,
+                zoomControl: false
             });
+            
+            // Add zoom control
+            L.control.zoom({
+                position: 'topright'
+            }).addTo(map);
+            
+            // Add attribution
+            L.control.attribution({
+                position: 'bottomright',
+                prefix: 'Map data © OpenStreetMap contributors'
+            }).addTo(map);
+            
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+            
+            // Add marker if coordinates are valid
+            if (hasValidCoordinates) {
+                // Custom marker icon
+                const customIcon = L.divIcon({
+                    className: 'custom-map-marker',
+                    html: '<div class="marker-pin"></div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                // Get location name
+                let locationName = "";
+                const locationElement = elementId === 'map' ? document.getElementById('location') : document.getElementById('location-mobile');
+                if (locationElement) {
+                    locationName = locationElement.textContent.trim();
+                }
+                
+                // Add marker
+                const marker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
+                
+                // Add popup
+                marker.bindPopup(`<strong>${locationName}</strong><br>Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`);
+                
+                // Add circle
+                L.circle([lat, lon], {
+                    color: '#4A90E2',
+                    fillColor: '#4A90E2',
+                    fillOpacity: 0.1,
+                    radius: 5000
+                }).addTo(map);
+            }
+            
+            // Fix any display issues
+            setTimeout(() => {
+                if (map) {
+                    map.invalidateSize();
+                }
+            }, 100);
+        } catch (error) {
+            console.error(`Error initializing ${elementId} map:`, error);
         }
-    </script>
-    {% endblock %}
+    }
+    
+    // Function to show spinner
+    window.showSpinner = function() {
+        const spinner = document.getElementById('spinner-overlay');
+        if (spinner) {
+            spinner.style.display = 'flex';
+            spinner.classList.remove('hide');
+            spinner.classList.add('show');
+        }
+    };
+    
+    // Function to hide spinner
+    window.hideSpinner = function() {
+        const spinner = document.getElementById('spinner-overlay');
+        if (spinner) {
+            spinner.classList.remove('show');
+            spinner.classList.add('hide');
+        }
+    };
+    
+    // Function to focus search input
+    window.focusSearchInput = function() {
+        const searchInput = document.getElementById('ip-search');
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    };
+})();
+function initFaqAccordions() {
+    const faqButtons = document.querySelectorAll('.faq-btn');
+    
+    faqButtons.forEach(button => {
+        // Remove any existing event listeners to prevent duplicates
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // Add click event listener to the new button
+        newButton.addEventListener('click', function() {
+            // Get the content panel for this button
+            const content = this.nextElementSibling;
+            
+            // Toggle icon rotation
+            const icon = this.querySelector('i');
+            if (icon) {
+                icon.classList.toggle('transform');
+                icon.classList.toggle('rotate-180');
+            }
+            
+            // Toggle content visibility
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                content.style.maxHeight = content.scrollHeight + 'px';
+                this.setAttribute('aria-expanded', 'true');
+            } else {
+                content.classList.add('hidden');
+                content.style.maxHeight = '0';
+                this.setAttribute('aria-expanded', 'false');
+            }
+        });
+    });
+    
+    // Initially expand the first FAQ item
+    if (faqButtons.length > 0) {
+        setTimeout(() => {
+            // Trigger click on the first FAQ button
+            faqButtons[0].click();
+        }, 500);
+    }
+}
+
+// Make sure the function is available globally
+window.initFaqAccordions = initFaqAccordions;
+
+// Initialize when the DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initFaqAccordions();
+    
+    // Add CSS for smooth transitions
+    if (!document.getElementById('faq-styles')) {
+        const style = document.createElement('style');
+        style.id = 'faq-styles';
+        style.innerHTML = `
+            .faq-content {
+                transition: max-height 0.3s ease-out;
+                overflow: hidden;
+                max-height: 0;
+            }
+            .faq-btn i {
+                transition: transform 0.3s ease;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+});
+</script>
 {% endblock %}

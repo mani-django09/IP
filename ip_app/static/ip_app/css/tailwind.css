@@ -1,0 +1,303 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Font Settings */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply text-gray-800 antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold;
+  }
+  
+  /* Focus styles for accessibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    @apply outline-none ring-2 ring-secondary ring-offset-2;
+  }
+  
+  /* Improved scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded hover:bg-gray-500 transition-colors;
+  }
+}
+
+/* Component Classes */
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-primary-700 text-white font-medium rounded-lg hover:bg-primary-800 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-70;
+  }
+  
+  .btn-secondary {
+    @apply px-4 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-600 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-70;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition duration-300 hover:shadow-lg;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:outline-none text-sm sm:text-base;
+  }
+  
+  /* Enhanced IP info box with gradient and better mobile display */
+  .ip-info-box {
+    @apply bg-gradient-to-br from-primary-700 to-primary-800 rounded-xl p-4 sm:p-5 shadow-lg text-white relative overflow-hidden border border-primary-600/20;
+  }
+  
+  /* Enhanced map container with better loading state handling */
+  .map-container {
+    @apply relative rounded-xl overflow-hidden shadow-lg h-64 sm:h-80 md:h-96 min-h-[240px] sm:min-h-[320px] border border-gray-100 bg-gray-100;
+  }
+  
+  /* Enhanced feature cards with better transitions and mobile display */
+  .feature-card {
+    @apply bg-white rounded-xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-t-4 border-transparent hover:border-t-secondary cursor-pointer;
+  }
+  
+  /* Enhanced detail items with better mobile display */
+  .detail-item {
+    @apply bg-white/10 p-2 sm:p-3 rounded-lg flex items-center gap-2 sm:gap-3 hover:bg-white/20 transition-all;
+  }
+  
+  /* Enhanced detail icon */
+  .detail-icon {
+    @apply bg-secondary/20 p-1.5 sm:p-2 rounded-lg text-secondary flex-shrink-0;
+  }
+  
+  /* Toast notification enhancements */
+  .toast-notification {
+    @apply rounded-lg shadow-xl max-w-xs sm:max-w-sm;
+  }
+  
+  /* Enhanced FAQ toggle buttons */
+  .faq-btn {
+    @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary rounded-lg;
+  }
+  
+  /* Loading indicator */
+  .loading-indicator {
+    @apply animate-pulse bg-gray-200;
+  }
+  
+  /* Animated placeholder for skeleton loading */
+  .skeleton-loading {
+    @apply animate-pulse bg-gray-200 rounded;
+  }
+}
+
+/* Custom animations */
+@keyframes marker-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(42, 159, 214, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(42, 159, 214, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(42, 159, 214, 0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+  
+  /* Smooth transition utilities */
+  .transition-smooth {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Break words utilities for long text */
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  
+  /* Text truncation with ellipsis */
+  .truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Target screen readers only */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    @apply sr-only;
+  }
+}
+
+/* Add these to your tailwind.css file */
+
+/* Blob animation */
+@keyframes blob {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite alternate;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Enhanced loading pulse animation */
+@keyframes enhanced-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.animate-enhanced-pulse {
+  animation: enhanced-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Floating animation for particles */
+@keyframes float {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-10px) translateX(5px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+/* For staggered animations */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+}
+
+/* Shine animation for text highlight */
+@keyframes shine {
+  from {
+    mask-position: 150%;
+  }
+  to {
+    mask-position: -50%;
+  }
+}
+
+.animate-shine {
+  mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 60%);
+  mask-size: 200%;
+  animation: shine 3s infinite;
+}
+
+/* Add a glow effect to important elements */
+.glow-effect {
+  text-shadow: 0 0 10px rgba(42, 159, 214, 0.5);
+}
+
+/* Bounce effect for IP display */
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s infinite;
+}
+
+/* Wave animation for the divider */
+@keyframes wave {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(-2%) translateY(2px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.animate-wave {
+  animation: wave 8s ease-in-out infinite;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .animate-blob {
+    opacity: 0.1;
+  }
+  
+  .animate-float {
+    animation-duration: 5s;
+  }
+}

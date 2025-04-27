@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.CommonMiddleware',  # Make sure this is here
+    'csp.middleware.CSPMiddleware',
 
 ]
 
@@ -157,3 +158,46 @@ EMAIL_HOST_USER = 'manikant007y@gmail.com'
 EMAIL_HOST_PASSWORD = 'owvk mrmj pbgz lkqi'
 DEFAULT_FROM_EMAIL = 'manikant007y@gmail.com'
 ADMIN_EMAIL = 'manikant007y@gmail.com'
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+
+# Use these in production
+# CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# SECURE_SSL_REDIRECT = True
+# SECURE_HSTS_SECONDS = 31536000  # 1 year
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_PRELOAD = True
+
+CSP_DEFAULT_SRC = ("'self'",)
+CSP_STYLE_SRC = ("'self'", 
+                 "https://cdn.jsdelivr.net",
+                 "https://fonts.googleapis.com",
+                 "https://cdnjs.cloudflare.com",
+                 "'unsafe-inline'")
+CSP_SCRIPT_SRC = ("'self'", 
+                  "https://cdn.jsdelivr.net",
+                  "https://unpkg.com",
+                  "https://cdnjs.cloudflare.com",
+                  "'unsafe-inline'")
+CSP_FONT_SRC = ("'self'", 
+                "https://fonts.gstatic.com",
+                "https://cdnjs.cloudflare.com")
+CSP_IMG_SRC = ("'self'", 
+               "https:", 
+               "data:")
+CSP_CONNECT_SRC = ("'self'", 
+                   "https://api.ipify.org",
+                   "https://*.tile.openstreetmap.org")
+
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
