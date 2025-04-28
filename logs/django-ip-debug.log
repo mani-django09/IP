@@ -1,0 +1,149 @@
+[2025-04-29 01:14:25,617] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:14:30,631] INFO basehttp "GET / HTTP/1.1" 301 0
+[2025-04-29 01:14:30,745] INFO basehttp code 400, message Bad request version ('\x15\x99\x8f¢+\x06î4]®Ç\x8e\x00ù967Ì8á¯_ú0ÞÊgÔ\x1b!\x14\x98\x03Ë3\x95ÎH\x194Ê%m4%>\x90g')
+[2025-04-29 01:14:30,747] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:30,750] INFO basehttp code 400, message Bad request version ('úú\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93êê\x00\x00\x00\x05\x00\x05\x01\x00\x00\x00\x00\x00')
+[2025-04-29 01:14:30,751] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:32,961] INFO basehttp code 400, message Bad request version ('\x00\x12\x00\x10\x04\x03\x08\x04\x04\x01\x05\x03\x08\x05\x05\x01\x08\x06\x06\x01\x00')
+[2025-04-29 01:14:32,961] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:32,964] INFO basehttp code 400, message Bad request version ('O\x03c¶¶æÊF\x98hü\x8a²X\x9c\x98r¡wiû\x18ôFwV¹')
+[2025-04-29 01:14:32,964] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:32,964] INFO basehttp code 400, message Bad request version ("ÁR\x97úõ6ãÒGs1vË\x8cÂþ\x07'\x88\x98Çh¢M/:_&\x93s\x97\x86v\x98\x84\x00m\x80\x81ýÇgx:\x14\x8eDÊ4Ü½¤ô'XWxJU,^ü")
+[2025-04-29 01:14:32,964] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:32,972] INFO basehttp code 400, message Bad request version ('ÊÊ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06súú\x00\x00\x00-\x00\x02\x01\x01\x00+\x00\x07\x06ÚÚ\x03\x04\x03\x03\x00')
+[2025-04-29 01:14:32,972] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:41,831] INFO basehttp "GET / HTTP/1.1" 301 0
+[2025-04-29 01:14:41,831] INFO basehttp code 400, message Bad request version (',î\x18Ü}Ü\x9c+n\x8aõ\x7f\x00')
+[2025-04-29 01:14:41,831] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:41,831] INFO basehttp code 400, message Bad request version ('\x9a\x9a\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93')
+[2025-04-29 01:14:41,831] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:43,501] INFO basehttp code 400, message Bad request version ('Q1\x12%î9!þ\x024Ø\x02np')
+[2025-04-29 01:14:43,502] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:14:43,504] INFO basehttp code 400, message Bad request version ('¡¸@\x84PÙ\x96Ä\x1a:Õl¿µÆÉ\x81\x86\x18Ç×\x99\x9c\x19\x86')
+[2025-04-29 01:14:43,504] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:13,985] INFO autoreload C:\Users\manik\OneDrive\Desktop\i\ip_checker_project\ip_checker_project\settings.py changed, reloading.
+[2025-04-29 01:15:14,906] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:15:18,458] INFO basehttp code 400, message Bad request version ('ªª\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063úú\x00\x00\x00\x17\x00\x00\x00+\x00\x07\x06ÊÊ\x03\x04\x03\x03\x00-\x00\x02\x01\x01\x00')
+[2025-04-29 01:15:18,458] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:18,458] INFO basehttp code 400, message Bad request version ('RÎ¬º\x81\xadÌªi\x82¥½élb¤¿\x14JP½\x84')
+[2025-04-29 01:15:18,458] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:24,782] INFO basehttp code 400, message Bad request version ("Å\x07\x8c;^Hk'Ô\x99i")
+[2025-04-29 01:15:24,782] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:24,790] INFO basehttp code 400, message Bad request version ('únå\x88\x83\x9f')
+[2025-04-29 01:15:24,791] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:31,121] INFO basehttp code 400, message Bad request version ("C:\x18msk'þ¹")
+[2025-04-29 01:15:31,121] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:31,121] INFO basehttp code 400, message Bad request version ('\x00')
+[2025-04-29 01:15:31,121] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:39,734] INFO basehttp code 400, message Bad request version ('\x81\x99Ö\x97\x08¦H;Úqcm{jðÖ\x19Tÿ\x8aêá\x10\x18Ð9\x9e\x11[·¶\x8dXs\x90\x88²iýª*>°£K\x8eLâ')
+[2025-04-29 01:15:39,736] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:39,736] INFO basehttp code 400, message Bad request version ('KÖÜâ')
+[2025-04-29 01:15:39,738] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:39,742] INFO basehttp code 400, message Bad request version ('cÔ´æ')
+[2025-04-29 01:15:39,742] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:39,743] INFO basehttp code 400, message Bad request version ('_')
+[2025-04-29 01:15:39,743] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:48,686] INFO basehttp code 400, message Bad request syntax ('\x16\x03\x01\x06à\x01\x00\x06Ü\x03\x03{\x126z\x17NÓÚ\x92ç')
+[2025-04-29 01:15:48,686] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:48,690] INFO basehttp code 400, message Bad request syntax ('\x16\x03\x01\x07\x00\x01\x00\x06ü\x03\x03m\x8b¯\x9d±\x1b\x05ÙßU®ú')
+[2025-04-29 01:15:48,690] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:53,799] INFO basehttp code 400, message Bad HTTP/0.9 request type ('\x16\x03\x01\x06')
+[2025-04-29 01:15:53,799] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:53,803] INFO basehttp code 400, message Bad request version ('Ï\x05dtw[§')
+[2025-04-29 01:15:53,804] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,440] INFO basehttp code 400, message Bad request version ('ZZ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06sÊÊ\x00\x00\x00')
+[2025-04-29 01:15:54,440] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,443] INFO basehttp code 400, message Bad request version ('·;g\x8dù\x92n<Û3ÝÏÿ¥\x03¹p}$')
+[2025-04-29 01:15:54,443] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,665] INFO basehttp code 400, message Bad request version ('\x00ú\x00\x00\x01\x00\x01p\x00')
+[2025-04-29 01:15:54,666] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,670] INFO basehttp code 400, message Bad request version ('\x15¿8²Hü\x92ß')
+[2025-04-29 01:15:54,670] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,840] INFO basehttp code 400, message Bad request version ('ºº\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063zz\x00\x00\x00')
+[2025-04-29 01:15:54,840] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:54,843] INFO basehttp code 400, message Bad request version ('ZZ\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06\x93ªª\x00\x00\x00')
+[2025-04-29 01:15:54,844] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:55,011] INFO basehttp code 400, message Bad request version ('ùÂ\x00\x80\x94Sqe°\x932¶¬\\\x1bZ¢Y')
+[2025-04-29 01:15:55,011] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:15:55,014] INFO basehttp code 400, message Bad request version ('ºº\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06súú\x00\x00\x00-\x00\x02\x01\x01\x00')
+[2025-04-29 01:15:55,014] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:16:24,904] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:16:27,526] INFO basehttp code 400, message Bad request version ('**\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06SJJ\x00\x00\x00')
+[2025-04-29 01:16:27,527] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:16:27,531] INFO basehttp code 400, message Bad request version (":\x87OÂ¹Y²?\x06\x8cV·ÀÈ\x8b¢\x92x\x99Î¾'·æ\x1a\x86ç\x137bü«J#97¤7uÉ¢\x931L(y_«Ö\x03Î¨0XÛ`jj«>ÈT/0\x9a±ô\x86AÌT")
+[2025-04-29 01:16:27,532] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:18:06,407] INFO autoreload C:\Users\manik\OneDrive\Desktop\i\ip_checker_project\ip_checker_project\settings.py changed, reloading.
+[2025-04-29 01:18:08,579] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:18:12,859] INFO basehttp code 400, message Bad request version ('â§\x89³W;C\x89R=ºCb')
+[2025-04-29 01:18:12,860] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:18:12,864] INFO basehttp code 400, message Bad request version ('Å_\x9aÀ\x05ë\x97l(')
+[2025-04-29 01:18:12,865] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:18:19,690] INFO basehttp code 400, message Bad request version ('\x02h2\x08http/1.1DÍ\x00\x05\x00\x03\x02h2\x00')
+[2025-04-29 01:18:19,690] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:18:19,690] INFO basehttp code 400, message Bad request version ('\x02h2\x08http/1.1\x00')
+[2025-04-29 01:18:19,690] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:19:13,761] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:19:22,442] INFO basehttp "GET / HTTP/1.1" 200 176508
+[2025-04-29 01:19:22,796] INFO basehttp "GET /static/ip_app/css/tailwind.css HTTP/1.1" 200 7026
+[2025-04-29 01:19:22,798] INFO basehttp "GET /static/ip_app/css/styles.css HTTP/1.1" 200 64267
+[2025-04-29 01:19:24,602] INFO basehttp "GET /static/ip_app/js/main.js HTTP/1.1" 200 33591
+[2025-04-29 01:19:28,843] INFO basehttp "GET /static/ip_app/img/favicon/site.webmanifest HTTP/1.1" 200 441
+[2025-04-29 01:19:28,893] WARNING log Not Found: /favicon.ico
+[2025-04-29 01:19:28,893] WARNING basehttp "GET /favicon.ico HTTP/1.1" 404 4669
+[2025-04-29 01:19:28,908] WARNING log Not Found: /favicon.svg
+[2025-04-29 01:19:28,908] WARNING basehttp "GET /favicon.svg HTTP/1.1" 404 4669
+[2025-04-29 01:19:28,925] WARNING basehttp "GET /static/ip_app/img/favicon/favicon-32x32.png HTTP/1.1" 404 1922
+[2025-04-29 01:19:28,942] WARNING basehttp "GET /static/ip_app/img/favicon/favicon-16x16.png HTTP/1.1" 404 1922
+[2025-04-29 01:19:28,960] WARNING log Not Found: /favicon-96x96.png
+[2025-04-29 01:19:28,960] WARNING basehttp "GET /favicon-96x96.png HTTP/1.1" 404 4687
+[2025-04-29 01:19:44,475] INFO basehttp "GET /ip-lookup HTTP/1.1" 301 0
+[2025-04-29 01:19:49,455] INFO basehttp "GET /ip-lookup/ HTTP/1.1" 200 127443
+[2025-04-29 01:20:00,222] INFO basehttp "GET / HTTP/1.1" 200 176508
+[2025-04-29 01:20:05,260] INFO basehttp "GET /ip-lookup?ip=103.125.235.21 HTTP/1.1" 301 0
+[2025-04-29 01:20:08,757] INFO basehttp "GET /ip-lookup/?ip=103.125.235.21 HTTP/1.1" 200 127421
+[2025-04-29 01:23:05,389] INFO basehttp code 400, message Bad request version ('ñ')
+[2025-04-29 01:23:05,395] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:05,399] INFO basehttp code 400, message Bad request version ('jj\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x06S')
+[2025-04-29 01:23:05,399] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:07,547] INFO basehttp code 400, message Bad request version (":Z$z°»Õä\x00¾¦Æ'ä\x1aÿ£K")
+[2025-04-29 01:23:07,547] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:07,551] INFO basehttp code 400, message Bad request version ('=@\x05\x9e\x8b¨k\x8e[æI\x86×}')
+[2025-04-29 01:23:07,551] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:16,200] INFO basehttp code 400, message Bad request version ('RüÑ\x0638v\x8dd\x8bhö³\x91\x8a7H\x9a6\x9c(\x8aô\x95\xad$')
+[2025-04-29 01:23:16,201] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:16,201] INFO basehttp code 400, message Bad request version ('**\x13\x01\x13\x02\x13\x03À+À/À,À0Ì©Ì¨À\x13À\x14\x00\x9c\x00\x9d\x00/\x005\x01\x00\x063\x9a\x9a\x00\x00\x00')
+[2025-04-29 01:23:16,202] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:16,207] INFO basehttp code 400, message Bad request version ('\x00\x02\x01\x00\x00#\x00\x00\x00')
+[2025-04-29 01:23:16,208] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:16,208] INFO basehttp code 400, message Bad request version ('¹')
+[2025-04-29 01:23:16,209] ERROR basehttp You're accessing the development server over HTTPS, but it only supports HTTP.
+[2025-04-29 01:23:25,345] INFO basehttp "GET / HTTP/1.1" 200 176508
+[2025-04-29 01:23:25,413] INFO basehttp "GET /static/ip_app/css/tailwind.css HTTP/1.1" 200 7026
+[2025-04-29 01:23:25,415] INFO basehttp "GET /static/ip_app/css/styles.css HTTP/1.1" 200 64267
+[2025-04-29 01:23:26,976] INFO basehttp "GET /static/ip_app/js/main.js HTTP/1.1" 200 33591
+[2025-04-29 01:23:31,664] WARNING log Not Found: /favicon.ico
+[2025-04-29 01:23:31,666] WARNING basehttp "GET /favicon.ico HTTP/1.1" 404 4669
+[2025-04-29 01:23:31,743] WARNING log Not Found: /favicon.svg
+[2025-04-29 01:23:31,746] WARNING basehttp "GET /favicon.svg HTTP/1.1" 404 4669
+[2025-04-29 01:23:31,763] WARNING basehttp "GET /static/ip_app/img/favicon/favicon-32x32.png HTTP/1.1" 404 1922
+[2025-04-29 01:23:31,777] WARNING basehttp "GET /static/ip_app/img/favicon/favicon-16x16.png HTTP/1.1" 404 1922
+[2025-04-29 01:23:31,779] WARNING log Not Found: /favicon-96x96.png
+[2025-04-29 01:23:31,794] WARNING basehttp "GET /favicon-96x96.png HTTP/1.1" 404 4687
+[2025-04-29 01:27:43,607] INFO basehttp "GET / HTTP/1.1" 200 177692
+[2025-04-29 01:27:43,657] INFO basehttp "GET /static/ip_app/js/main.js HTTP/1.1" 304 0
+[2025-04-29 01:27:56,144] INFO basehttp "GET / HTTP/1.1" 200 177692
+[2025-04-29 01:28:30,785] INFO basehttp "GET / HTTP/1.1" 200 176347
+[2025-04-29 01:29:00,268] INFO autoreload Watching for file changes with StatReloader
+[2025-04-29 01:29:08,666] INFO basehttp "GET / HTTP/1.1" 200 176347
+[2025-04-29 01:29:08,768] INFO basehttp "GET /static/ip_app/js/main.js HTTP/1.1" 304 0
+[2025-04-29 01:29:19,567] INFO basehttp "GET /contact HTTP/1.1" 301 0
+[2025-04-29 01:29:19,787] INFO basehttp "GET /contact/ HTTP/1.1" 200 29168
+[2025-04-29 01:29:19,856] WARNING basehttp "GET /static/ip_app/css/style.css HTTP/1.1" 404 1874
+[2025-04-29 01:30:39,591] INFO basehttp "GET / HTTP/1.1" 200 176202
+[2025-04-29 01:30:39,627] INFO basehttp "GET /static/ip_app/js/main.js HTTP/1.1" 304 0
+[2025-04-29 01:30:41,549] WARNING log Not Found: /my-ip
+[2025-04-29 01:30:41,549] WARNING basehttp "GET /my-ip HTTP/1.1" 404 4651
+[2025-04-29 01:31:12,185] INFO basehttp "GET / HTTP/1.1" 200 176206
+[2025-04-29 01:31:14,553] INFO basehttp "GET /ip-lookup HTTP/1.1" 301 0
+[2025-04-29 01:31:19,762] INFO basehttp "GET /ip-lookup/ HTTP/1.1" 200 127141
+[2025-04-29 01:31:48,780] INFO basehttp - Broken pipe from ('127.0.0.1', 50960)

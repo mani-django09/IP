@@ -91,8 +91,7 @@
                 
                 <!-- Desktop Navigation - Hidden on Small Screens -->
                 <nav class="hidden md:flex items-center space-x-4 sm:space-x-6" aria-label="Main navigation">
-                    <a href="/#my-ip" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">My IP</a>
-                    <a href="/#tools" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">IP Tools</a>
+                    <a href="/ip-lookup" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">My IP</a>
                     <a href="/#faq" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">FAQ</a>
                     <a href="/contact" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">Contact</a>
                 </nav>
@@ -108,8 +107,7 @@
         <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100" aria-labelledby="mobileMenuButton">
             <div class="container mx-auto px-4 py-2">
                 <nav class="flex flex-col space-y-1" aria-label="Mobile navigation">
-                    <a href="/#my-ip" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">My IP</a>
-                    <a href="/#tools" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">IP Tools</a>
+                    <a href="/ip-lookup" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">My IP</a>
                     <a href="/#faq" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">FAQ</a>
                     <a href="/contact" class="text-gray-600 py-2 px-3 hover:bg-gray-50 hover:text-secondary transition rounded-md">Contact</a>
                 </nav>
@@ -123,7 +121,6 @@
         {% endblock %}
     </main>
 
-    <!-- Footer -->
     <!-- Footer -->
 <footer class="bg-gray-800 text-white py-8 sm:py-12">
     <div class="container mx-auto px-10">
@@ -160,18 +157,7 @@
     </div>
 </footer>
     
-    <!-- Cookie Consent Banner - Enhanced for Mobile and Accessibility -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white shadow-lg p-3 sm:p-4 z-40 hidden" id="cookieConsent" aria-labelledby="cookieConsentTitle" role="dialog" aria-modal="true">
-        <div class="container mx-auto">
-            <div class="flex flex-col md:flex-row items-center justify-between">
-                <p id="cookieConsentTitle" class="text-gray-700 text-xs sm:text-sm md:text-base mb-3 md:mb-0">We use cookies to provide a better user experience. By using our site, you agree to our <a href="/privacy" class="text-secondary hover:underline focus:outline-none focus:underline">Privacy Policy</a>.</p>
-                <div class="flex space-x-2 sm:space-x-3">
-                    <button onclick="acceptCookies()" class="bg-secondary hover:bg-secondary-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2">Accept</button>
-                    <button onclick="declineCookies()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">Decline</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Toast Container for Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
