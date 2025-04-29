@@ -1,3 +1,5 @@
+{% load compress %}
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -5,22 +7,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/favicon/apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon/favicon-32x32.png' %}">
-<link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon/favicon-16x16.png' %}">
-<link rel="manifest" href="{% static 'ip_app/img/favicon/site.webmanifest' %}">
-
-<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<link rel="manifest" href="/site.webmanifest" />
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'ip_app/img/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'ip_app/img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'ip_app/img/favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'ip_app/img/favicon/site.webmanifest' %}">
     
-    <!-- Primary Meta Tags -->
-    <title>{% block title %}What Is My IP Address | Check IP Address Location | IP Lookup Tool{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Find 'What is my IP address' instantly with our free IP lookup tool. Get your current IPv4, IPv6, precise location, ISP details, and more. Check your IP now!{% endblock %}">
-    <meta name="keywords" content="what is my ip, my ip, whats my ip, my ip address, ip address lookup, what is my ip address, ip lookup, check ip, ip finder, ip tracker, find my ip, ipv6 checker, geolocation">
+    <!-- Primary Meta Tags - Optimized Length -->
+    <title>{% block title %}What Is My IP Address | Fast & Free IP Location Lookup{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Instantly see your IP address with our free lookup tool. Get location, ISP details, and network information for any IPv4 or IPv6 address.{% endblock %}">
+    <meta name="keywords" content="what is my ip, my ip, ip address lookup, ip location, ip finder, ipv4, ipv6, geolocation">
+    
+    <!-- Canonical Tag -->
+    <link rel="canonical" href="https://whatismyipaddress.world{{ request.path }}">
     
     <!-- Mobile-specific meta -->
     <meta name="theme-color" content="#1b4a6b">
@@ -31,19 +30,60 @@
     
     {% block extra_meta %}{% endblock %}
 
-    <!-- Font Awesome - Load defer for performance -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <!-- Resource Hints - Preconnect to important domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://flagcdn.com">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//pagead2.googlesyndication.com">
+    <link rel="dns-prefetch" href="//tile.openstreetmap.org">
+    
+    <!-- Critical CSS -->
+    <style>
+        /* Critical styles for above-the-fold content */
+        body{min-height:100vh;font-family:'Inter',sans-serif;color:#333;background-color:#f9fafb;margin:0;padding:0}
+        .container{width:100%;max-width:1200px;margin:0 auto;padding:0 1rem}
+        header{background-color:#fff;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+        .loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;background-color:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+        .hidden{display:none}
+        .flex{display:flex}
+        .items-center{align-items:center}
+        .justify-between{justify-content:space-between}
+        .text-xl{font-size:1.25rem;line-height:1.75rem}
+        .font-bold{font-weight:700}
+        .text-secondary{color:#2a9fd6}
+        .text-gray-400{color:#9ca3af}
+        .text-primary-700{color:#1e40af}
+        .min-h-screen{min-height:100vh}
+        .flex-col{flex-direction:column}
+        .bg-gray-50{background-color:#f9fafb}
+        .text-gray-800{color:#1f2937}
+        .py-3{padding-top:0.75rem;padding-bottom:0.75rem}
+        .px-4{padding-left:1rem;padding-right:1rem}
+        .shadow-sm{box-shadow:0 1px 2px 0 rgba(0,0,0,0.05)}
+        @media (min-width:640px){.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:py-4{padding-top:1rem;padding-bottom:1rem}}
+    </style>
+    
+    <!-- Preload key assets -->
+    <link rel="preload" href="{% static 'ip_app/css/styles.min.css' %}" as="style">
+    <link rel="preload" href="{% static 'ip_app/js/main.min.js' %}" as="script">
+    
+    <!-- Font Awesome - Optimized loading -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"></noscript>
-    
-    <!-- Tailwind CSS - Preload for better performance -->
+    {% compress css %}
     <link rel="stylesheet" href="{% static 'ip_app/css/styles.css' %}">
+    {% endcompress %}
     
+    
+     
     <!-- Leaflet Map CSS - Load when needed -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"></noscript>
     
     <!-- Google Fonts - Optimized loading -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"></noscript>
@@ -64,8 +104,21 @@
         }
     }
     </script>
+
+    <!-- AdSense - Async Loading -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6913093595582462" crossorigin="anonymous"></script>
 </head>
+
 <body class="min-h-screen flex flex-col bg-gray-50 text-gray-800">
+    <!-- Google Tag Manager - Optimized for async loading -->
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FT20Y3JPXD', { 'anonymize_ip': true, 'transport_type': 'beacon' });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT20Y3JPXD"></script>
+
     <!-- Loading Overlay - Enhanced Animation -->
     <div id="loadingOverlay" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="text-center px-4">
@@ -91,14 +144,13 @@
                 
                 <!-- Desktop Navigation - Hidden on Small Screens -->
                 <nav class="hidden md:flex items-center space-x-4 sm:space-x-6" aria-label="Main navigation">
-                    <a href="/ip-lookup" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">My IP</a>
-                    <a href="/#faq" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">FAQ</a>
+                    <a href="/ip-lookup" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">IP Lookup</a>
                     <a href="/contact" class="text-gray-600 hover:text-secondary transition py-1 px-1 rounded-md hover:bg-gray-100">Contact</a>
                 </nav>
                 
                 <!-- Mobile Menu Button - Only Visible on Small Screens -->
                 <button class="md:hidden text-gray-600 focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 p-1 rounded-md" id="mobileMenuButton" aria-expanded="false" aria-label="Toggle navigation menu">
-                    <i class="fas fa-bars text-xl"></i>
+                    <i class="fas fa-bars text-xl" aria-hidden="true"></i>
                 </button>
             </div>
         </div>
@@ -122,52 +174,59 @@
     </main>
 
     <!-- Footer -->
-<footer class="bg-gray-800 text-white py-8 sm:py-12">
-    <div class="container mx-auto px-10">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-9 sm:gap-8">
-            <div>
-                <h3 class="text-xl font-bold mb-3 sm:mb-4">About</h3>
-                <p class="text-gray-300 text-sm sm:text-base">Get detailed information about IP addresses, including location, ISP, and network details with our free "What Is My IP" tool.</p>
+    <footer class="bg-gray-800 text-white py-8 sm:py-12">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-6">
+                <div>
+                    <h3 class="text-xl font-bold mb-3 sm:mb-4">About</h3>
+                    <p class="text-gray-300 text-sm sm:text-base">Get detailed information about IP addresses, including location, ISP, and network details with our free "What Is My IP" tool.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-3 sm:mb-4">Quick Links</h3>
+                    <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
+                        <li><a href="/" class="hover:text-white transition font-medium">My IP</a></li>
+                        <li><a href="/ip-lookup" class="hover:text-white transition font-medium">IP Lookup</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-3 sm:mb-4">Legal</h3>
+                    <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
+                        <li><a href="/privacy" class="hover:text-white transition font-medium">Privacy Policy</a></li>
+                        <li><a href="/terms" class="hover:text-white transition font-medium">Terms of Service</a></li>
+                        <li><a href="/contact" class="hover:text-white transition font-medium">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-3 sm:mb-4">Support</h3>
+                    <p class="text-gray-300 text-sm sm:text-base">For support: <a href="mailto:manikant007y@gmail.com" class="text-secondary hover:text-white transition font-medium">manikant007y@gmail.com</a></p>
+                </div>
             </div>
-            <div>
-                <h3 class="text-xl font-bold mb-3 sm:mb-4">Quick Links</h3>
-                <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
-                    <li><a href="/#my-ip" class="hover:text-white transition font-medium">My IP</a></li>
-                    <li><a href="/#tools" class="hover:text-white transition font-medium">IP Tools</a></li>
-                    <li><a href="/ip-lookup" class="hover:text-white transition font-medium">IP Lookup</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-3 sm:mb-4">Legal</h3>
-                <ul class="space-y-1 sm:space-y-2 text-sm sm:text-base text-gray-300">
-                    <li><a href="/privacy" class="hover:text-white transition font-medium">Privacy Policy</a></li>
-                    <li><a href="/terms" class="hover:text-white transition font-medium">Terms of Service</a></li>
-                    <li><a href="/contact" class="hover:text-white transition font-medium">Contact Us</a></li>
-                </ul>
-            </div>
-            <div>
-                <h3 class="text-xl font-bold mb-3 sm:mb-4">Support</h3>
-                <p class="text-gray-300 text-sm sm:text-base">For support: <a href="mailto:manikant007y@gmail.com" class="text-secondary hover:text-white transition font-medium">manikant007y@gmail.com</a></p>
+            
+            <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700 text-center text-sm sm:text-lg font-semibold text-gray-400">
+                <p>© {% now "Y" %} WhatIsMyIPAddress.World. All rights reserved.</p>
             </div>
         </div>
-        
-        <div class="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-gray-700 text-center text-sm sm:text-lg font-semibold text-gray-400">
-            <p>© {% now "Y" %} WhatIsMyIPAddress.World. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+    </footer>
     
-   
-
     <!-- Toast Container for Notifications -->
     <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
-    <!-- Scripts - Optimized Loading -->
-    <!-- Load critical scripts first -->
-    <script src="{% static 'ip_app/js/main.js' %}" defer></script>
+    <!-- Main JavaScript - With defer for better performance -->
+    <script src="{% static 'ip_app/js/main.min.js' %}" defer></script>
     
-    <!-- Load non-critical scripts with lower priority -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <!-- Load Leaflet script only when needed -->
+    <script>
+        // Lazy load Leaflet only if map container exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapContainer = document.getElementById('ip-map');
+            if (mapContainer && !window.L) {
+                const leafletScript = document.createElement('script');
+                leafletScript.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                leafletScript.defer = true;
+                document.body.appendChild(leafletScript);
+            }
+        });
+    </script>
     
     <script>
         // Mobile menu toggle with better accessibility
@@ -218,11 +277,7 @@
             
             // Improved toast notification system
             window.showToast = function(message, type = 'info') {
-                // Remove any existing toasts
-                const existingToasts = document.querySelectorAll('.toast-notification');
-                existingToasts.forEach(toast => toast.remove());
-                
-                // Create toast container if it doesn't exist
+                // Get toast container
                 let toastContainer = document.getElementById('toast-container');
                 if (!toastContainer) {
                     toastContainer = document.createElement('div');
@@ -271,14 +326,11 @@
                 setTimeout(() => {
                     toast.classList.add('translate-x-full');
                     setTimeout(() => {
-                        toast.remove();
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
                     }, 300);
                 }, 5000);
-            }
-            
-            // Check if cookie consent has been set
-            if (!getCookie('cookie_consent')) {
-                document.getElementById('cookieConsent').classList.remove('hidden');
             }
             
             // Lazy load images
@@ -288,55 +340,28 @@
                 images.forEach(img => {
                     if (img.dataset.src) {
                         img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
                     }
                 });
             } else {
                 // Fallback for browsers that don't support native lazy loading
-                const lazyImages = document.querySelectorAll('img[data-src]');
-                if (lazyImages.length > 0) {
-                    if ('IntersectionObserver' in window) {
-                        const imageObserver = new IntersectionObserver((entries) => {
-                            entries.forEach(entry => {
-                                if (entry.isIntersecting) {
-                                    const img = entry.target;
+                if ('IntersectionObserver' in window) {
+                    const imageObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const img = entry.target;
+                                if (img.dataset.src) {
                                     img.src = img.dataset.src;
                                     img.removeAttribute('data-src');
-                                    imageObserver.unobserve(img);
                                 }
-                            });
+                                imageObserver.unobserve(img);
+                            }
                         });
-                        lazyImages.forEach(img => imageObserver.observe(img));
-                    } else {
-                        // For older browsers
-                        // Simple scroll-based lazy loading
-                        const lazyLoad = function() {
-                            lazyImages.forEach(function(img) {
-                                if (isInViewport(img) && img.dataset.src) {
-                                    img.src = img.dataset.src;
-                                    img.removeAttribute('data-src');
-                                }
-                            });
-                        };
-                        
-                        // Check if element is in viewport
-                        function isInViewport(el) {
-                            const rect = el.getBoundingClientRect();
-                            return (
-                                rect.top >= 0 &&
-                                rect.left >= 0 &&
-                                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                            );
-                        }
-                        
-                        // Add event listeners
-                        window.addEventListener('scroll', lazyLoad);
-                        window.addEventListener('resize', lazyLoad);
-                        window.addEventListener('orientationchange', lazyLoad);
-                        
-                        // Initial check
-                        lazyLoad();
-                    }
+                    });
+                    
+                    document.querySelectorAll('img[data-src]').forEach(img => {
+                        imageObserver.observe(img);
+                    });
                 }
             }
         });
@@ -365,8 +390,10 @@
         
         function acceptCookies() {
             setCookie('cookie_consent', 'accepted', 365);
-            document.getElementById('cookieConsent').classList.add('hidden');
-            // Show confirmation toast
+            const consentBanner = document.getElementById('cookieConsent');
+            if (consentBanner) {
+                consentBanner.classList.add('hidden');
+            }
             if (window.showToast) {
                 window.showToast('Cookies accepted. Thank you!', 'success');
             }
@@ -374,8 +401,10 @@
         
         function declineCookies() {
             setCookie('cookie_consent', 'declined', 365);
-            document.getElementById('cookieConsent').classList.add('hidden');
-            // Show confirmation toast
+            const consentBanner = document.getElementById('cookieConsent');
+            if (consentBanner) {
+                consentBanner.classList.add('hidden');
+            }
             if (window.showToast) {
                 window.showToast('Cookies declined. Some features may be limited.', 'info');
             }
@@ -383,5 +412,8 @@
     </script>
     
     {% block extra_js %}{% endblock %}
+    {% compress js %}
+<script src="{% static 'ip_app/js/main.js' %}"></script>
+{% endcompress %}</script>
 </body>
 </html>

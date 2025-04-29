@@ -42,7 +42,36 @@ INSTALLED_APPS = [
     'ip_app',
     'django.contrib.sites',  # Add this
     'django.contrib.sitemaps',  # Add this
+    'compressor',
+    'htmlmin',
 ]
+
+HTML_MINIFY = True
+KEEP_COMMENTS = False
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+# Enable compression
+COMPRESS_ENABLED = True
+
+# Set CSS and JS filters
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.rCSSMinFilter',
+]
+
+COMPRESS_JS_FILTERS = [
+    'compressor.filters.jsmin.JSMinFilter',
+]
+
+# Cache compressed files
+COMPRESS_OUTPUT_DIR = 'compressed'
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
+
 
 SITE_ID = 1
 
@@ -57,6 +86,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.common.CommonMiddleware',  # Make sure this is here
     'csp.middleware.CSPMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'htmlmin.middleware.HtmlMinifyMiddleware'
+
 
 ]
 
@@ -139,11 +171,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': os.path.join(BASE_DIR, 'django_cache'),
+        }
     }
-}
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True  # Only for development

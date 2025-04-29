@@ -378,4 +378,44 @@ def ip_lookup(request):
     print(f"Final IP Data: {ip_data}")
     print(f"IP address in context: {ip_to_lookup}")
     
+    dynamic_meta = generate_dynamic_meta(ip_data)
+    context['dynamic_meta'] = dynamic_meta
     return render(request, 'ip_app/ip_lookup.html', context)
+
+# Add dynamic meta description generation function
+def generate_meta_description(ip_data):
+    base_description = "Discover your IP address details, including location, ISP, and network information. Fast, secure, and accurate IP lookup tool."
+    
+    if ip_data and ip_data.get('city') and ip_data.get('country'):
+        return f"Find IP geolocation for {ip_data['city']}, {ip_data['country']}. Get comprehensive network details and security insights."
+    
+    return base_description
+
+# In views.py, update context
+
+# Generate dynamic sitemap
+from django.contrib.sitemaps import Sitemap
+from django.urls import reverse
+
+class StaticViewSitemap(Sitemap):
+    priority = 0.8
+    changefreq = 'weekly'
+
+    def items(self):
+        return [
+            'index',
+            'ip_lookup',
+            'privacy',
+            'terms',
+            'contact'
+        ]
+
+    def location(self, item):
+        return reverse(item)
+    
+def generate_dynamic_meta(ip_data):
+    return {
+        'title': f"IP Lookup: {ip_data.get('city', 'Global')} IP Address Details | WhatIsMyIPAddress.World",
+        'description': f"Discover detailed IP geolocation for {ip_data.get('city', 'your location')}. Get precise network information, ISP details, and security insights for IP {ip_data.get('query', 'address')}.",
+        'keywords': f"IP lookup, {ip_data.get('city', '')}, {ip_data.get('country', '')} IP, network information, geolocation, {ip_data.get('isp', '')} ISP"
+    }

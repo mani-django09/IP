@@ -1,3 +1,8 @@
+# Add robots.txt configuration
+ROBOTS_TXT_CONTENT = """
 User-agent: *
 Allow: /
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://whatismyipaddress.world/sitemap.xml
+
+# Performance and crawl optimization
+Crawl-delay: 10

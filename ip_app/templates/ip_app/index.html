@@ -1,15 +1,16 @@
 {% extends 'ip_app/base.html' %}
+{% load compress %}
+
 {% load static %}
 
-{% block title %}IP Lookup Tool | Find My IP Address Location | WhatIsMyIPAddress.World{% endblock %}
+{% block title %}{{ dynamic_meta.title|default:"What Is My IP Address | Fast & Free IP Location Lookup" }}{% endblock %}
 
-{% block meta_description %}Free IP lookup tool to check your IP address location, ISP details, geolocation data, and more. Find what is my IP address now with our detailed IP locator at WhatIsMyIPAddress.World.{% endblock %}
+{% block meta_description %}{{ dynamic_meta.description|default:"Instantly see your IP address with our free lookup tool. Get location, ISP details, and network information for any IPv4 or IPv6 address." }}{% endblock %}
 
 {% block extra_meta %}
 <!-- Primary Meta Tags -->
-<meta name="title" content="IP Lookup Tool | Find My IP Address Location | WhatIsMyIPAddress.World">
-<meta name="description" content="Free IP lookup tool to check your IP address location, ISP details, geolocation data, and more. Find what is my IP address now with our detailed IP locator at WhatIsMyIPAddress.World.">
-<meta name="keywords" content="what is my ip, what is my ip address, my ip, locate my ip, ip locator, check ip address, ip location finder, ip lookup tool, whatismyipaddress.world">
+<meta name="title" content="{{ dynamic_meta.title|default:"What Is My IP Address | Fast & Free IP Location Lookup" }}">
+<meta name="keywords" content="{{ dynamic_meta.keywords|default:"what is my ip, my ip, ip address lookup, ip location finder, check ip address, whatismyipaddress.world" }}">
 <meta name="author" content="WhatIsMyIPAddress.World">
 <meta name="robots" content="index, follow">
 <meta name="revisit-after" content="7 days">
@@ -17,19 +18,19 @@
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://whatismyipaddress.world/ip-lookup">
-<meta property="og:title" content="IP Lookup Tool | Find My IP Address Location | WhatIsMyIPAddress.World">
-<meta property="og:description" content="Free IP lookup tool to check your IP address location, ISP details, geolocation data, and more. Find what is my IP address now with our detailed IP locator at WhatIsMyIPAddress.World.">
+<meta property="og:title" content="{{ dynamic_meta.title|default:"What Is My IP Address | Fast & Free IP Location Lookup" }}">
+<meta property="og:description" content="{{ dynamic_meta.description|default:"Instantly see your IP address with our free lookup tool. Get location, ISP details, and network information for any IPv4 or IPv6 address." }}">
 <meta property="og:image" content="{% static 'ip_app/img/og-image.png' %}">
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image">
 <meta property="twitter:url" content="https://whatismyipaddress.world/ip-lookup">
-<meta property="twitter:title" content="IP Lookup Tool | Find My IP Address Location | WhatIsMyIPAddress.World">
-<meta property="twitter:description" content="Free IP lookup tool to check your IP address location, ISP details, geolocation data, and more. Find what is my IP address now with our detailed IP locator at WhatIsMyIPAddress.World.">
+<meta property="twitter:title" content="{{ dynamic_meta.title|default:"What Is My IP Address | Fast & Free IP Location Lookup" }}">
+<meta property="twitter:description" content="{{ dynamic_meta.description|default:"Instantly see your IP address with our free lookup tool. Get location, ISP details, and network information for any IPv4 or IPv6 address." }}">
 <meta property="twitter:image" content="{% static 'ip_app/img/twitter-image.png' %}">
 
 <!-- Canonical URL -->
-<meta rel="canonical" href="https://whatismyipaddress.world/ip-lookup">
+<link rel="canonical" href="https://whatismyipaddress.world/ip-lookup">
 
 <!-- Mobile viewport optimization -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -38,27 +39,28 @@
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="preconnect" href="https://flagcdn.com">
 <link rel="preconnect" href="https://tile.openstreetmap.org">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
- <!-- Favicon -->
- <link rel="icon" type="image/png" href="https://whatismyipaddress.world/static/ip_app/img/favicon.png">
-    
- <!-- Fonts -->
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
- 
- <!-- Font Awesome -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- 
- <!-- Leaflet CSS -->
- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
- 
- <!-- Tailwind CSS -->
- <link rel="stylesheet" href="{% static 'ip_app/css/tailwind.css' %}">
 {% endblock %}
 
+
 {% block extra_css %}
+
 <style>
+  /* Optimized CSS for IP Lookup Website - Critical styles */
+  @keyframes pulse-ring {0% {transform:scale(.35)} 80%,100% {opacity:0}}
+  @keyframes pulse-dot {0% {transform:scale(.8)} 50% {transform:scale(1)} 100% {transform:scale(.8)}}
+  @keyframes marker-pulse {0% {transform:scale(.95);box-shadow:0 0 0 0 rgba(42,159,214,.7)} 70% {transform:scale(1);box-shadow:0 0 0 8px rgba(42,159,214,0)} 100% {transform:scale(.95);box-shadow:0 0 0 0 rgba(42,159,214,0)}}
+  @keyframes fade-in {from {opacity:0;transform:translateY(8px)} to {opacity:1;transform:translateY(0)}}
+  
+  .loading-overlay {position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:9999;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s;will-change:opacity,visibility}
+  .loading-overlay.show {opacity:1;visibility:visible}
+  .pulse-ring {position:relative;width:38px;height:38px}
+  .pulse-ring:before {content:'';position:absolute;left:0;right:0;top:0;bottom:0;border:2px solid #2a9fd6;border-radius:50%;animation:pulse-ring 1.25s cubic-bezier(.215,.61,.355,1) infinite}
+  .pulse-dot {position:absolute;left:0;right:0;top:0;bottom:0;width:38px;height:38px;background-color:#2a9fd6;border-radius:50%;animation:pulse-dot 1.25s cubic-bezier(.455,.03,.515,.955) -.4s infinite}
+  .ip-search-box {border-radius:10px;border:2px solid #e5e7eb;transition:all .2s ease;padding:.75rem;box-shadow:0 2px 4px rgba(0,0,0,.05);background-color:white}
+  .ip-search-box:focus-within {border-color:#2a9fd6;box-shadow:0 4px 8px rgba(42,159,214,.15)}
+  .ip-info-card {position:relative;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease;border-radius:.75rem;box-shadow:0 3px 10px rgba(0,0,0,.05);background-color:white}
+  .ip-info-card:hover {transform:translateY(-3px);box-shadow:0 8px 15px rgba(0,0,0,.08)}
+  .results-container {animation:fade-in .4s ease-out forwards}
     /* Optimized CSS for IP Lookup Website */
 
     /* Loading animation - more performant version */
@@ -649,7 +651,7 @@
 </div>
 
 <!-- Hero Section - Clean Blue Design With No Wave Overlays -->
-<section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 pt-12 pb-24 px-4">
+<section class="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 pt-12 pb-30 px-4"> <!-- Increased pb-24 to pb-48 for more bottom padding -->
   <!-- Animated Background Elements -->
   <div class="absolute inset-0 overflow-hidden">
       <!-- Dynamic particles with subtle movement -->
@@ -748,13 +750,13 @@
                   </div>
               </div>
           </div>
-      </div>
-  </div>
-  
-
+          
+          <!-- Added additional spacer div for even more bottom padding -->
+          <div class="h-10"></div>
       </div>
   </div>
 </section>
+
 
 <!-- Add enhanced JavaScript for particles and animations -->
 <script>
@@ -891,18 +893,7 @@ function fetchUserIPWithLocation() {
                         {% endif %}
                     </p>
                 </div>
-                
-                <!-- IP Summary Card -->
-<!-- IP Summary Card - Simple Design Matching Screenshot -->
-<div class="card-stack max-w-4xl mx-auto mb-12">
-  <div class="bg-primary-800 p-4 rounded-t-xl flex items-center">
-      <div class="flex items-center gap-3">
-          <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white">
-              <i class="fas fa-globe text-xl"></i>
-          </div>
-          <h3 class="text-xl sm:text-2xl font-bold text-white">Your IP Address Information</h3>
-      </div>
-  </div>
+
       
   <!-- Main Content Area -->
   <div class="p-4 bg-white rounded-b-xl border-x border-b border-gray-200">
@@ -3419,5 +3410,6 @@ function setupLazyLoading() {
 
 // Make sure the onclick attribute works properly
 window.toggleFAQ = toggleFAQ;
+
 </script>
 {% endblock %}
