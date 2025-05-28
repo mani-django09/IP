@@ -2,29 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom Font Settings */
+/* Base Layer - Enhanced for mobile */
 @layer base {
   html {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     scroll-behavior: smooth;
+    font-size: 16px; /* Ensure 16px base for mobile accessibility */
   }
   
   body {
     @apply text-gray-800 antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   }
   
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold;
+  /* Mobile-first typography */
+  h1 { @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight; }
+  h2 { @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight; }
+  h3 { @apply text-lg sm:text-xl md:text-2xl font-semibold leading-tight; }
+  h4 { @apply text-base sm:text-lg md:text-xl font-semibold; }
+  h5 { @apply text-sm sm:text-base md:text-lg font-semibold; }
+  h6 { @apply text-sm sm:text-base font-semibold; }
+  
+  /* Enhanced focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-blue-500 ring-offset-2 ring-offset-white;
   }
   
-  /* Focus styles for accessibility */
-  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
-    @apply outline-none ring-2 ring-secondary ring-offset-2;
-  }
-  
-  /* Improved scrollbar styling */
+  /* Mobile-optimized scrollbar */
   ::-webkit-scrollbar {
-    @apply w-2 h-2;
+    @apply w-1 h-1 sm:w-2 sm:h-2;
   }
   
   ::-webkit-scrollbar-track {
@@ -32,120 +40,181 @@
   }
   
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-400 rounded hover:bg-gray-500 transition-colors;
+    @apply bg-gray-400 rounded-full hover:bg-gray-500 transition-colors;
+  }
+  
+  /* Prevent zoom on input focus on mobile */
+  @media screen and (max-width: 768px) {
+    input[type="text"], 
+    input[type="email"], 
+    input[type="search"], 
+    textarea, 
+    select {
+      font-size: 16px !important;
+    }
   }
 }
 
-/* Component Classes */
+/* Component Layer - Mobile-first responsive components */
 @layer components {
+  
+  /* Enhanced button components with better mobile touch targets */
   .btn-primary {
-    @apply px-4 py-2 bg-primary-700 text-white font-medium rounded-lg hover:bg-primary-800 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-70;
+    @apply px-4 py-3 sm:px-6 sm:py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center;
   }
   
   .btn-secondary {
-    @apply px-4 py-2 bg-secondary text-white font-medium rounded-lg hover:bg-secondary-600 transition duration-300 shadow-md focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-2 disabled:opacity-70;
+    @apply px-4 py-3 sm:px-6 sm:py-3 bg-cyan-600 text-white font-medium rounded-lg hover:bg-cyan-700 focus:bg-cyan-700 active:bg-cyan-800 transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed min-h-[44px] flex items-center justify-center;
   }
   
+  .btn-outline {
+    @apply px-4 py-3 sm:px-6 sm:py-3 border-2 border-blue-600 text-blue-600 font-medium rounded-lg hover:bg-blue-600 hover:text-white focus:bg-blue-600 focus:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 min-h-[44px] flex items-center justify-center;
+  }
+  
+  /* Enhanced card component with better mobile spacing */
   .card {
-    @apply bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition duration-300 hover:shadow-lg;
+    @apply bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
   }
   
+  /* Mobile-optimized input fields */
   .input-field {
-    @apply w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent focus:outline-none text-sm sm:text-base;
+    @apply w-full px-4 py-3 sm:py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none text-base bg-white transition-all duration-200 placeholder-gray-500 min-h-[44px];
   }
   
-  /* Enhanced IP info box with gradient and better mobile display */
+  /* Enhanced IP info box with better mobile display */
   .ip-info-box {
-    @apply bg-gradient-to-br from-primary-700 to-primary-800 rounded-xl p-4 sm:p-5 shadow-lg text-white relative overflow-hidden border border-primary-600/20;
+    @apply bg-gradient-to-br from-blue-700 to-blue-800 rounded-xl p-4 sm:p-6 shadow-lg text-white relative overflow-hidden border border-blue-600/20;
   }
   
-  /* Enhanced map container with better loading state handling */
+  /* Mobile-optimized map container */
   .map-container {
-    @apply relative rounded-xl overflow-hidden shadow-lg h-64 sm:h-80 md:h-96 min-h-[240px] sm:min-h-[320px] border border-gray-100 bg-gray-100;
+    @apply relative rounded-xl overflow-hidden shadow-lg h-64 sm:h-80 md:h-96 lg:h-[400px] min-h-[240px] border border-gray-200 bg-gray-100;
   }
   
-  /* Enhanced feature cards with better transitions and mobile display */
+  /* Enhanced feature cards with mobile-first design */
   .feature-card {
-    @apply bg-white rounded-xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-t-4 border-transparent hover:border-t-secondary cursor-pointer;
+    @apply bg-white rounded-xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-gray-100 cursor-pointer group;
   }
   
-  /* Enhanced detail items with better mobile display */
+  .feature-card:hover {
+    @apply border-blue-200;
+  }
+  
+  /* Mobile-optimized detail items */
   .detail-item {
-    @apply bg-white/10 p-2 sm:p-3 rounded-lg flex items-center gap-2 sm:gap-3 hover:bg-white/20 transition-all;
+    @apply bg-white/10 backdrop-blur-sm p-3 sm:p-4 rounded-lg flex items-start sm:items-center gap-3 hover:bg-white/20 transition-all duration-200;
   }
   
-  /* Enhanced detail icon */
+  /* Enhanced detail icon with better mobile sizing */
   .detail-icon {
-    @apply bg-secondary/20 p-1.5 sm:p-2 rounded-lg text-secondary flex-shrink-0;
+    @apply bg-cyan-500/20 p-2 sm:p-2.5 rounded-lg text-cyan-400 flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center;
   }
   
-  /* Toast notification enhancements */
+  /* Mobile-optimized toast notifications */
   .toast-notification {
-    @apply rounded-lg shadow-xl max-w-xs sm:max-w-sm;
+    @apply rounded-lg shadow-xl max-w-xs sm:max-w-sm mx-4 sm:mx-0;
   }
   
-  /* Enhanced FAQ toggle buttons */
+  /* Enhanced FAQ styling with smooth animations */
+  .faq-item {
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md;
+  }
+  
   .faq-btn {
-    @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-secondary rounded-lg;
+    @apply w-full text-left p-4 sm:p-6 font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset transition-all duration-200 flex items-center justify-between hover:bg-gray-50;
   }
   
-  /* Loading indicator */
+  .faq-content {
+    @apply overflow-hidden transition-all duration-300 ease-in-out;
+    max-height: 0;
+  }
+  
+  .faq-content.expanded {
+    max-height: 1000px;
+  }
+  
+  /* Loading states */
   .loading-indicator {
-    @apply animate-pulse bg-gray-200;
+    @apply animate-pulse bg-gray-200 rounded;
   }
   
-  /* Animated placeholder for skeleton loading */
   .skeleton-loading {
     @apply animate-pulse bg-gray-200 rounded;
   }
-}
-
-/* Custom animations */
-@keyframes marker-pulse {
-  0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(42, 159, 214, 0.7);
+  
+  /* Copy button enhancement */
+  .copy-btn {
+    @apply bg-white/20 hover:bg-white/30 active:bg-white/40 text-white text-sm font-medium py-2 px-3 sm:px-4 rounded-lg flex items-center transition-all duration-200 backdrop-blur-sm border border-white/20 hover:border-white/30 min-h-[40px];
   }
   
-  70% {
-    transform: scale(1);
-    box-shadow: 0 0 0 10px rgba(42, 159, 214, 0);
+  /* Mobile-first search container */
+  .search-container {
+    @apply w-full max-w-4xl mx-auto;
   }
   
-  100% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(42, 159, 214, 0);
+  .ip-search-box {
+    @apply bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden;
+  }
+  
+  /* Enhanced mobile menu */
+  .mobile-menu {
+    @apply md:hidden bg-white border-t border-gray-200 shadow-lg;
+  }
+  
+  /* Stats/counter styling */
+  .stat-item {
+    @apply text-center p-4 sm:p-6;
+  }
+  
+  .stat-number {
+    @apply text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 mb-2;
+  }
+  
+  .stat-label {
+    @apply text-sm sm:text-base text-gray-600 font-medium;
+  }
+  
+  /* Tool card styling */
+  .tool-card {
+    @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:-translate-y-2 border border-gray-100;
+  }
+  
+  .tool-icon {
+    @apply w-12 h-12 sm:w-16 sm:h-16 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300;
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+/* Utility Layer - Custom utilities for mobile optimization */
 @layer utilities {
+  
+  /* Animation utilities */
   .animate-fadeIn {
-    animation: fadeIn 0.5s ease-out forwards;
+    animation: fadeIn 0.6s ease-out forwards;
   }
   
-  /* Smooth transition utilities */
-  .transition-smooth {
-    @apply transition-all duration-300 ease-in-out;
+  .animate-slideUp {
+    animation: slideUp 0.6s ease-out forwards;
   }
   
-  /* Break words utilities for long text */
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s infinite;
+  }
+  
+  /* Mobile touch optimization */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Text utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
   .break-anywhere {
     overflow-wrap: anywhere;
     word-break: break-word;
   }
   
-  /* Text truncation with ellipsis */
   .truncate-2-lines {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -153,15 +222,97 @@
     overflow: hidden;
   }
   
-  /* Target screen readers only */
-  .sr-only-focusable:not(:focus):not(:focus-within) {
-    @apply sr-only;
+  .truncate-3-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Spacing utilities for mobile */
+  .space-y-mobile > * + * {
+    @apply mt-4 sm:mt-6;
+  }
+  
+  .space-x-mobile > * + * {
+    @apply ml-4 sm:ml-6;
+  }
+  
+  /* Container utilities */
+  .container-mobile {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Gradient utilities */
+  .gradient-primary {
+    background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
+  }
+  
+  /* Safe area utilities for mobile */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
   }
 }
 
-/* Add these to your tailwind.css file */
+/* Custom Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-/* Blob animation */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.33);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
 @keyframes blob {
   0% {
     transform: translate(0, 0) scale(1);
@@ -189,115 +340,91 @@
   animation-delay: 4s;
 }
 
-/* Enhanced loading pulse animation */
-@keyframes enhanced-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.7;
-    transform: scale(1.05);
-  }
-}
-
-.animate-enhanced-pulse {
-  animation: enhanced-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-/* Floating animation for particles */
-@keyframes float {
-  0% {
-    transform: translateY(0) translateX(0);
-  }
-  50% {
-    transform: translateY(-10px) translateX(5px);
-  }
-  100% {
-    transform: translateY(0) translateX(0);
-  }
-}
-
-.animate-float {
-  animation: float 8s ease-in-out infinite;
-}
-
-/* For staggered animations */
-.delay-100 {
-  animation-delay: 0.1s;
-}
-
-.delay-200 {
-  animation-delay: 0.2s;
-}
-
-.delay-300 {
-  animation-delay: 0.3s;
-}
-
-.delay-400 {
-  animation-delay: 0.4s;
-}
-
-/* Shine animation for text highlight */
-@keyframes shine {
-  from {
-    mask-position: 150%;
-  }
-  to {
-    mask-position: -50%;
-  }
-}
-
-.animate-shine {
-  mask-image: linear-gradient(to right, rgba(0,0,0,1) 40%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,1) 60%);
-  mask-size: 200%;
-  animation: shine 3s infinite;
-}
-
-/* Add a glow effect to important elements */
-.glow-effect {
-  text-shadow: 0 0 10px rgba(42, 159, 214, 0.5);
-}
-
-/* Bounce effect for IP display */
-@keyframes bounce-subtle {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
-.animate-bounce-subtle {
-  animation: bounce-subtle 2s infinite;
-}
-
-/* Wave animation for the divider */
-@keyframes wave {
-  0% {
-    transform: translateX(0) translateY(0);
-  }
-  50% {
-    transform: translateX(-2%) translateY(2px);
-  }
-  100% {
-    transform: translateX(0) translateY(0);
-  }
-}
-
-.animate-wave {
-  animation: wave 8s ease-in-out infinite;
-}
-
-/* Mobile optimizations */
+/* Responsive design enhancements */
 @media (max-width: 640px) {
+  /* Reduce animation intensity on mobile for performance */
   .animate-blob {
-    opacity: 0.1;
+    opacity: 0.3;
+    animation-duration: 10s;
   }
   
-  .animate-float {
-    animation-duration: 5s;
+  /* Optimize map for mobile */
+  .leaflet-container {
+    height: 250px !important;
+  }
+  
+  /* Better mobile spacing */
+  .section-mobile {
+    @apply py-8 sm:py-12 md:py-16;
+  }
+  
+  /* Mobile-optimized hero section */
+  .hero-mobile {
+    @apply pt-8 pb-12 sm:pt-12 sm:pb-16;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet optimizations */
+  .tablet-grid {
+    @apply grid-cols-2;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop optimizations */
+  .desktop-grid {
+    @apply grid-cols-3 lg:grid-cols-4;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .card, .feature-card, .tool-card {
+    @apply border-2 border-gray-800;
+  }
+  
+  .btn-primary, .btn-secondary {
+    @apply border-2 border-gray-800;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Dark mode support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .dark-mode-card {
+    @apply bg-gray-800 border-gray-700 text-white;
+  }
+  
+  .dark-mode-text {
+    @apply text-gray-200;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  .card, .feature-card {
+    @apply shadow-none border border-gray-300;
+  }
+  
+  body {
+    @apply text-black bg-white;
   }
 }

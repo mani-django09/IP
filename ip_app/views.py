@@ -8,12 +8,24 @@ from django.views.decorators.cache import cache_page
 from django.views.decorators.http import require_http_methods
 import re
 import ipaddress
+from functools import lru_cache
+import logging
+import aiohttp
+
+logger = logging.getLogger(__name__)
 
 # Try to import ratelimit, but have a fallback if it's not available
 try:
     from ratelimit.decorators import ratelimit
     has_ratelimit = True
 except ImportError:
+    def ratelimit(key=None, rate=None, method=None, block=False):
+        def decorator(fn):
+            return fn
+        return decorator
+    has_ratelimit = False
+
+
     # Define a dummy decorator that does nothing if ratelimit isn't installed
     def ratelimit(key=None, rate=None, method=None, block=False):
         def decorator(fn):
@@ -414,8 +426,119 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
     
 def generate_dynamic_meta(ip_data):
+    """Generate dynamic meta tags based on IP data for better SEO"""
+    city = ip_data.get('city', '')
+    country = ip_data.get('country', '')
+    ip_address = ip_data.get('query', '')
+    
+    if city and country and city != 'Unknown' and country != 'Unknown':
+        title = f"IP Location: {city}, {country} - Detailed IP Address Information"
+        description = f"Discover comprehensive IP geolocation data for {city}, {country}. Get precise network information, ISP details, and security insights for IP address {ip_address}."
+        keywords = f"IP lookup {city}, {country} IP address, geolocation {city}, network information, ISP details, {ip_address}"
+    elif country and country != 'Unknown':
+        title = f"IP Location: {country} - IP Address Geolocation Details"
+        description = f"Find detailed IP geolocation information for {country}. Get accurate network data, ISP details, and security analysis for IP address {ip_address}."
+        keywords = f"IP lookup {country}, IP address geolocation, network information, {ip_address}"
+    else:
+        title = "IP Address Lookup - Detailed Network Information"
+        description = f"Get comprehensive IP address information including geolocation, ISP details, and network security analysis for IP {ip_address}."
+        keywords = f"IP address lookup, geolocation, network information, {ip_address}"
+    
     return {
-        'title': f"IP Lookup: {ip_data.get('city', 'Global')} IP Address Details | WhatIsMyIPAddress.World",
-        'description': f"Discover detailed IP geolocation for {ip_data.get('city', 'your location')}. Get precise network information, ISP details, and security insights for IP {ip_data.get('query', 'address')}.",
-        'keywords': f"IP lookup, {ip_data.get('city', '')}, {ip_data.get('country', '')} IP, network information, geolocation, {ip_data.get('isp', '')} ISP"
+        'title': title,
+        'description': description,
+        'keywords': keywords
     }
+
+
+class SecurityHeadersMiddleware:
+    """Add security headers to all responses"""
+    
+    def __init__(self, get_response):
+        self.get_response = get_response
+    
+    def __call__(self, request):
+        response = self.get_response(request)
+        
+        # Add security headers
+        response['X-Content-Type-Options'] = 'nosniff'
+        response['X-Frame-Options'] = 'DENY'
+        response['X-XSS-Protection'] = '1; mode=block'
+        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        
+        # Add CSP header for better security
+        csp = (
+            "default-src 'self'; "
+            "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com "
+            "https://unpkg.com https://cdnjs.cloudflare.com "
+            "https://www.googletagmanager.com https://pagead2.googlesyndication.com; "
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com "
+            "https://cdnjs.cloudflare.com https://unpkg.com; "
+            "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; "
+            "img-src 'self' data: https:; "
+            "connect-src 'self' https://api.ipify.org https://ipapi.co "
+            "https://ip-api.com https://api.my-ip.io; "
+            "frame-src 'none';"
+        )
+        response['Content-Security-Policy'] = csp
+        
+        return response
+    
+import asyncio
+import aiohttp
+from django.http import JsonResponse
+from asgiref.sync import sync_to_async
+async def get_ip_data_async(ip):
+    """Async version of IP data fetching for better performance"""
+    services = [
+        f'https://ipinfo.io/{ip}/json',
+        f'https://ipapi.co/{ip}/json/',
+        f'http://ip-api.com/json/{ip}'
+    ]
+    
+    timeout = aiohttp.ClientTimeout(total=5)
+    
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        tasks = []
+        for url in services:
+            tasks.append(fetch_ip_data(session, url))
+        
+        # Return the first successful result
+        for coro in asyncio.as_completed(tasks):
+            try:
+                result = await coro
+                if result:
+                    return result
+            except Exception as e:
+                logger.warning(f"Async IP lookup failed: {e}")
+                continue
+    
+    return {
+        'status': 'error',
+        'query': ip,
+        'error': 'All async services failed'
+    }
+
+
+import time
+from functools import wraps
+def monitor_performance(func):
+    """Decorator to monitor view performance"""
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        start_time = time.time()
+        response = func(request, *args, **kwargs)
+        end_time = time.time()
+        
+        duration = end_time - start_time
+        if duration > 1.0:  # Log slow requests
+            logger.warning(f"Slow request: {request.path} took {duration:.2f}s")
+        
+        # Add performance header for monitoring
+        response['X-Response-Time'] = f"{duration:.3f}s"
+        return response
+    return wrapper
+
+index = monitor_performance(index)
+ip_lookup = monitor_performance(ip_lookup)
+get_ip_info = monitor_performance(get_ip_info)
